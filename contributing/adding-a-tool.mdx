@@ -1,0 +1,180 @@
+---
+title: "Adding a tool"
+description: "Step-by-step guide to submitting a new static analysis tool to the catalog."
+---
+
+Adding a tool to the catalog requires creating one YAML file, validating it locally, and opening a pull request. The whole process takes about ten minutes for a straightforward entry.
+
+Before you start, confirm that the tool meets the inclusion requirements: it must be actively maintained, have more than 20 GitHub stars (or equivalent community impact), and have existed for at least three months. See [Contributing overview](/contributing/overview) for details.
+
+## Step-by-step
+
+<Steps>
+  <Step title="Fork the repository">
+    Go to [github.com/analysis-tools-dev/static-analysis](https://github.com/analysis-tools-dev/static-analysis) and click **Fork**. Clone your fork locally:
+
+    ```bash
+    git clone https://github.com/<your-username>/static-analysis.git
+    cd static-analysis
+    ```
+  </Step>
+
+  <Step title="Create a new YAML file">
+    Create a file at `data/tools/<toolname>.yml`. Use the tool's canonical lowercase name, with hyphens instead of spaces:
+
+    ```bash
+    # Examples
+    data/tools/eslint.yml
+    data/tools/shellcheck.yml
+    data/tools/my-new-tool.yml
+    ```
+
+    <Tip>
+      Check the existing files in `data/tools/` before creating yours. If a file already exists, edit it rather than creating a duplicate.
+    </Tip>
+  </Step>
+
+  <Step title="Fill in the required fields">
+    Every tool entry must include `name`, `categories`, `tags`, `license`, `types`, `homepage`, and `description`. See [Tool format](/contributing/tool-format) for the complete schema.
+
+    Here is a complete, working example based on the real format used in the repository:
+
+    ```yaml
+    name: Semgrep
+    categories:
+      - linter
+    tags:
+      - c
+      - csharp
+      - go
+      - java
+      - javascript
+      - python
+      - ruby
+      - security
+      - typescript
+    license: GNU Lesser General Public License v2.1
+    types:
+      - cli
+      - service
+    source: 'https://github.com/returntocorp/semgrep'
+    homepage: 'https://semgrep.dev'
+    description: >-
+      A fast, open-source, static analysis tool for finding bugs and enforcing
+      code standards at editor, commit, and CI time. Its rules look like the code
+      you already write; no abstract syntax trees or regex wrestling.
+      Supports 17+ languages.
+    resources:
+      - title: Semgrep Quick Start Tutorial
+        url: https://www.youtube.com/watch?v=8jyp8DkhmYo
+    reviews:
+      - https://stackshare.io/semgrep
+    demos:
+      - https://semgrep.dev/playground
+    ```
+
+    For a simpler tool with fewer fields:
+
+    ```yaml
+    name: shellcheck
+    categories:
+      - linter
+    tags:
+      - shell
+    license: GNU General Public License v3.0
+    types:
+      - cli
+    source: 'https://github.com/koalaman/shellcheck'
+    homepage: 'https://www.shellcheck.net'
+    description: >-
+      ShellCheck, a static analysis tool that gives warnings and suggestions for
+      bash/sh shell scripts.
+    ```
+  </Step>
+
+  <Step title="Write a good description">
+    The description is what most users read first. Keep these rules in mind:
+
+    - **Maximum 500 characters.** This is a community guideline from `CONTRIBUTING.md`. Keep descriptions concise.
+    - **Be precise, not promotional.** State what the tool does, what languages it supports, and what makes it distinctive. Avoid vague phrases like "powerful", "best-in-class", or "easy to use".
+    - **Use the `>-` block scalar** for multi-line descriptions to keep the YAML readable. This strips trailing newlines and collapses line breaks into spaces.
+    - **Write in third person.** Describe the tool as an external observer, not as its author.
+
+    <Warning>
+      Keep descriptions under 500 characters — this is a contribution guideline. Reviewers will ask you to shorten descriptions that are too long before merging.
+    </Warning>
+  </Step>
+
+  <Step title="Add tags">
+    Tags are the primary way users filter tools on the website. Add every relevant tag from `data/tags.yml`. Tag values are lowercase slugs like `python`, `typescript`, `security`, or `dockerfile`.
+
+    ```yaml
+    tags:
+      - javascript
+      - typescript
+      - jsx
+    ```
+
+    If no existing tag fits the tool, add a new entry to `data/tags.yml` in the same commit. Choose a short, reusable value. See [Tags](/contributing/tags) for the full list and format.
+  </Step>
+
+  <Step title="Run make render to validate">
+    From the repository root, run:
+
+    ```bash
+    make render
+    ```
+
+    This compiles all YAML files and reports errors.     Common errors include:
+
+    - Unknown tag values (not in `data/tags.yml`)
+    - Invalid `types` values (must be one of `cli`, `gui`, `service`, `ide-plugin`)
+    - Invalid `categories` values (must be one of `linter`, `formatter`, `performance`, `meta`)
+    - Tool name exceeding 50 characters
+    - Missing required tags (every tool must have at least one tag)
+
+    Fix any reported errors before continuing.
+
+    <Info>
+      Running `make render` requires Rust and Cargo. If you don't have them installed, you can skip this step — CI will run the same check automatically when you open a pull request.
+    </Info>
+  </Step>
+
+  <Step title="Open a pull request">
+    Commit your changes and push your branch:
+
+    ```bash
+    git add data/tools/<toolname>.yml
+    git commit -m "Add <toolname>"
+    git push origin main
+    ```
+
+    Then open a pull request on GitHub against the upstream `main` branch. In the PR description, briefly explain what the tool does and why it belongs in the catalog. If you also added a new tag, mention it.
+
+    CI will run `make render` automatically. A green check means your YAML is valid.
+  </Step>
+</Steps>
+
+## What to check before submitting
+
+Use this list before opening your pull request:
+
+- `name` matches the tool's official name (preserve casing), max 50 characters
+- At least one `tags` value is present; all tag values exist in `data/tags.yml`
+- `license` is a valid SPDX string or `proprietary`
+- `types` uses only `cli`, `gui`, `service`, or `ide-plugin`
+- `categories` uses only `linter`, `formatter`, `performance`, or `meta`
+- `description` is under 500 characters (community guideline)
+- `homepage` and `source` are valid URLs
+- `make render` exits without errors
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Tool format" icon="file-code" href="/contributing/tool-format">
+    Full YAML schema reference with every supported field
+  </Card>
+  <Card title="Tags" icon="tag" href="/contributing/tags">
+    Browse all available language and other tags
+  </Card>
+</CardGroup>

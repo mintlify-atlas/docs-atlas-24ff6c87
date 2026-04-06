@@ -1,0 +1,91 @@
+---
+title: "Contributing overview"
+description: "How the community keeps the Analysis Tools catalog accurate, current, and comprehensive."
+---
+
+The Analysis Tools catalog is entirely community-maintained. Every tool entry is a YAML file in the `data/tools/` directory of the [analysis-tools-dev/static-analysis](https://github.com/analysis-tools-dev/static-analysis) repository. Anyone can open a pull request to add a tool, fix a description, update a license, or mark a deprecated project.
+
+Without ongoing contributions, the catalog goes stale. New tools emerge constantly, old ones are abandoned, and metadata drifts from reality. Your pull request — however small — directly improves the resource that thousands of developers use to evaluate and choose static analysis tooling.
+
+## Requirements for inclusion
+
+Not every tool belongs in the catalog. To keep the list useful, a tool must satisfy all three conditions:
+
+- **Actively maintained** — the project has more than one contributor and shows ongoing development.
+- **Widely used** — the project has more than 20 stars on GitHub, or demonstrates equivalent community impact through another platform.
+- **Mature enough** — the project has existed for at least three months.
+
+These requirements exist to prevent noise. A brand-new hobby project is worth watching, but premature inclusion leads to dead links and stale descriptions within months.
+
+<Note>
+  If you're unsure whether a tool qualifies, don't open an issue — open a pull request instead. It's faster and easier for maintainers to evaluate a concrete submission than to discuss a hypothetical one.
+</Note>
+
+## How contributions work
+
+The general contribution flow has four steps:
+
+<Steps>
+  <Step title="Fork the repository">
+    Fork [analysis-tools-dev/static-analysis](https://github.com/analysis-tools-dev/static-analysis) on GitHub and clone your fork locally.
+  </Step>
+  <Step title="Create or edit a YAML file">
+    Add a new file at `data/tools/<toolname>.yml`, or edit an existing one. The YAML schema is documented in [Tool format](/contributing/tool-format).
+  </Step>
+  <Step title="Validate your changes">
+    Run `make render` from the repository root. This compiles all YAML sources into the README and the JSON API output. Any schema violations or invalid tags will be reported as errors. Fixing them locally is faster than waiting for CI.
+  </Step>
+  <Step title="Open a pull request">
+    Push your branch and open a pull request against the `main` branch. Describe what you added or changed and why. The CI pipeline runs `make render` automatically on every PR, so the build status will confirm whether your YAML is valid.
+  </Step>
+</Steps>
+
+## What happens after you submit a PR
+
+A maintainer will review your pull request. Common feedback includes:
+
+- Description is too long (limit is 500 characters) or too vague
+- Missing required fields such as `license` or `tags`
+- Tag values that don't match any entry in `data/tags.yml`
+- Tool doesn't meet the activity or maturity requirements
+
+Once approved, the PR is merged and the README and JSON API are regenerated automatically. The tool will appear on [analysis-tools.dev](https://analysis-tools.dev) after the next site build.
+
+## Marking deprecated tools
+
+Tools become unmaintained over time. Marking a tool as deprecated keeps the catalog honest without deleting valuable historical information — a deprecated tool can still work well for many use cases.
+
+To mark a tool as deprecated, add `deprecated: true` to its YAML file and open a pull request with an objective explanation of why the tool should be flagged. If there is a relevant issue or discussion link, add it as `discussion: <url>`. Every deprecation is reviewed individually.
+
+<Warning>
+  Do not delete a tool's YAML file when it becomes unmaintained. Use `deprecated: true` instead so the tool remains visible but clearly flagged.
+</Warning>
+
+## Community standards
+
+- Write descriptions that are precise and factual, not promotional.
+- Keep descriptions under 500 characters.
+- Add as many relevant tags as possible — tags power the filters on the website.
+- If a tool needs a tag that doesn't exist yet, add the tag to `data/tags.yml` in the same PR.
+- Respect the code of conduct of the upstream repository.
+
+## Sister project
+
+The [awesome-dynamic-analysis](https://github.com/analysis-tools-dev/dynamic-analysis) repository follows the same structure and contribution model, but catalogs dynamic analysis tools — tools that analyze software at runtime rather than at the source level. If a tool you want to add performs both static and dynamic analysis, it may belong in both catalogs.
+
+## Explore the contributing guides
+
+<CardGroup cols={2}>
+  <Card title="Adding a tool" icon="plus" href="/contributing/adding-a-tool">
+    Step-by-step walkthrough for submitting a new tool entry
+  </Card>
+  <Card title="Tool format" icon="file-code" href="/contributing/tool-format">
+    Complete YAML schema reference for tool entries
+  </Card>
+  <Card title="Tags" icon="tag" href="/contributing/tags">
+    Full list of language and other tags, and how to add new ones
+  </Card>
+  <Card title="How it works" icon="circle-info" href="/how-it-works">
+    How the YAML sources are rendered into the README and JSON API
+  </Card>
+</CardGroup>

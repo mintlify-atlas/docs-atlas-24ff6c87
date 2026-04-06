@@ -1,0 +1,211 @@
+---
+title: "Tags"
+description: "How tags work in the catalog, the full list of language and other tags, and how to add a new tag."
+---
+
+Tags are the primary categorization mechanism in the Analysis Tools catalog. Every tool entry specifies one or more tag values in its `tags` field. These values power the language and category filters on [analysis-tools.dev](https://analysis-tools.dev) and group tools in the generated README.
+
+## Tag types
+
+Tags are defined in `data/tags.yml`. Each tag has three properties:
+
+```yaml
+- name: Python
+  value: python
+  type: language
+```
+
+| Property | Description |
+|----------|-------------|
+| `name`   | Human-readable display name shown on the website and in the README |
+| `value`  | Slug used in tool YAML files — always lowercase, no spaces |
+| `type`   | Either `language` or `other` |
+
+**Language tags** (`type: language`) represent programming languages. Tools tagged with a language tag appear under that language's section in the README and on the website.
+
+**Other tags** (`type: other`) represent frameworks, file formats, tooling categories, platforms, and similar concepts that are not strictly programming languages. Examples include `dockerfile`, `kubernetes`, `security`, and `terraform`.
+
+## Using tags in a tool entry
+
+In `data/tools/<toolname>.yml`, the `tags` field is a list of tag `value` slugs — not display names:
+
+```yaml
+tags:
+  - python
+  - javascript
+  - security
+  - dockerfile
+```
+
+Add every tag that applies. A tool can have any number of tags. The more tags you add, the more filters the tool will appear under on the website, which increases its discoverability.
+
+<Tip>
+  When in doubt, add more tags rather than fewer. A Python linter that also supports Django templates should include both `python` and `template`.
+</Tip>
+
+## Language tags
+
+These tags represent programming languages. Use the `value` column in your tool's `tags` field.
+
+| Name | Value |
+|------|-------|
+| .NET | `dotnet` |
+| ABAP | `abap` |
+| ActionScript | `actionscript` |
+| Active Server Pages | `asp` |
+| Ada | `ada` |
+| Apex | `apex` |
+| ASP.NET | `aspnet` |
+| Assembly | `asm` |
+| Awk | `awk` |
+| C | `c` |
+| C# | `csharp` |
+| C++ | `cpp` |
+| Clojure | `clojure` |
+| COBOL | `cobol` |
+| CoffeeScript | `coffeescript` |
+| ColdFusion | `coldfusion` |
+| Crystal | `crystal` |
+| Dart | `dart` |
+| Delphi | `delphi` |
+| Dlang | `dlang` |
+| Elixir | `elixir` |
+| Elm | `elm` |
+| Erlang | `erlang` |
+| F# | `fsharp` |
+| Fortran | `fortran` |
+| Go | `go` |
+| Groovy | `groovy` |
+| Haskell | `haskell` |
+| Haxe | `haxe` |
+| Java | `java` |
+| JavaScript | `javascript` |
+| JavaServer Pages | `jsp` |
+| Jimple | `jimple` |
+| JSX | `jsx` |
+| Julia | `julia` |
+| Kotlin | `kotlin` |
+| Lightning Web Components | `lwc` |
+| Lisp | `lisp` |
+| Lua | `lua` |
+| MATLAB | `matlab` |
+| Nim | `nim` |
+| Objective C | `objectivec` |
+| Ocaml | `ocaml` |
+| Pascal | `pascal` |
+| Perl | `perl` |
+| PHP | `php` |
+| PL/SQL | `plsql` |
+| PowerShell | `powershell` |
+| Python | `python` |
+| R | `r` |
+| Raku | `raku` |
+| Rego | `rego` |
+| Ruby | `ruby` |
+| Rust | `rust` |
+| Scala | `scala` |
+| Shell | `shell` |
+| SQL | `sql` |
+| Swift | `swift` |
+| Tcl | `tcl` |
+| TSQL | `tsql` |
+| TypeScript | `typescript` |
+| VBScript | `vbscript` |
+| Verilog/SystemVerilog | `verilog` |
+| Vim Script | `vim-script` |
+| Visual Basic | `vbasic` |
+| Visual Basic .NET | `vbnet` |
+| Visual Basic for Applications (VBA) | `vba` |
+| Visualforce | `visualforce` |
+| WebAssembly | `wasm` |
+
+## Other tags
+
+These tags cover formats, frameworks, platforms, and tool categories that are not programming languages.
+
+| Name | Value |
+|------|-------|
+| .env | `dotenv` |
+| Ansible | `ansible` |
+| Archive | `archive` |
+| Azure Resource Manager | `arm` |
+| Binaries | `binary` |
+| Build tools | `buildtool` |
+| Cloud Formation | `cloudformation` |
+| Config Files | `configfile` |
+| Configuration Management | `configmanagement` |
+| Containers | `container` |
+| Continuous Integration | `ci` |
+| CSS/SASS/SCSS | `css` |
+| Deno | `deno` |
+| Dockerfile | `dockerfile` |
+| Embedded | `embedded` |
+| Embedded Ruby (a.k.a. ERB, eRuby) | `erb` |
+| Gherkin | `gherkin` |
+| Ghidra | `ghidra` |
+| git | `git` |
+| HTML | `html` |
+| JSON | `json` |
+| Kubernetes | `kubernetes` |
+| Laravel | `laravel` |
+| LaTeX | `latex` |
+| Less | `less` |
+| Makefiles | `make` |
+| Markdown | `markdown` |
+| Metalinter | `meta` |
+| Mobile | `mobile` |
+| Nix | `nix` |
+| Node.js | `nodejs` |
+| Packages | `package` |
+| PhoneGap | `phonegap` |
+| Prometheus | `prometheus` |
+| Protocol Buffers | `protobuf` |
+| Puppet | `puppet` |
+| Rails | `rails` |
+| Security/SAST | `security` |
+| Smart Contracts | `smart-contracts` |
+| Spring | `spring` |
+| Support | `support` |
+| Template-Languages | `template` |
+| Terraform | `terraform` |
+| Translation | `translation` |
+| Vue.js | `vue` |
+| Writing | `writing` |
+| XML | `xml` |
+| YAML | `yaml` |
+
+## Adding a new tag
+
+If a tool you're adding doesn't fit any existing tag, you can introduce a new one. Add the tag to `data/tags.yml` in the same pull request as the tool entry.
+
+A tag entry in `data/tags.yml` looks like this:
+
+```yaml
+- name: WebGPU
+  value: webgpu
+  type: other
+```
+
+Follow these conventions when creating a new tag:
+
+- Choose a `name` that matches how the technology is commonly referred to.
+- Choose a `value` that is lowercase, uses hyphens instead of spaces, and is as short as unambiguous.
+- Set `type` to `language` for programming languages, or `other` for everything else.
+- Place the entry in alphabetical order by `name` within `data/tags.yml`.
+
+<Warning>
+  All tag values referenced in tool YAML files must exist in `data/tags.yml`. If you add a tag to a tool entry but forget to add it to `data/tags.yml`, `make render` will fail with an "Invalid tag" error.
+</Warning>
+
+After adding a new tag, run `make render` to confirm the tag is recognised and the tool entry validates correctly.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Adding a tool" icon="plus" href="/contributing/adding-a-tool">
+    Step-by-step guide to creating and submitting a tool entry
+  </Card>
+  <Card title="Tool format" icon="file-code" href="/contributing/tool-format">
+    Full YAML schema for tool entries, including the tags field
+  </Card>
+</CardGroup>

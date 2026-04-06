@@ -1,0 +1,130 @@
+---
+title: 'Data & API overview'
+description: 'Machine-readable JSON files for every static analysis tool in the catalog — ready for integrations, queries, and notebooks.'
+---
+
+The catalog exposes its data as a set of static JSON files that you can consume directly from the repository. There is no authentication, no rate limiting, and no server to call — just files you read.
+
+<Info>
+  The data format may change over time as the website rendering pipeline evolves. Pin to a specific commit if you need stability in long-running scripts.
+</Info>
+
+## What is the JSON API?
+
+When you run `make render`, the Rust renderer reads every `.yml` file under `data/tools/`, validates it, and writes two kinds of output:
+
+1. `README.md` — the human-readable catalog generated from an Askama template.
+2. `data/api/` — a directory of machine-readable JSON files.
+
+The JSON files let you query and filter the full catalog without parsing Markdown. They are the same data that powers [analysis-tools.dev](https://analysis-tools.dev).
+
+## File locations
+
+| File | Description |
+|------|-------------|
+| `data/api/tools.json` | All tools, keyed by slugified tool name. |
+| `data/api/tags.json` | All valid language and "other" tags. |
+| `data/api/stats/` | Per-tool website traffic statistics. |
+
+<Note>
+  These files are generated — do not edit them by hand. To change tool data, update the corresponding `.yml` file under `data/tools/` and re-run `make render`.
+</Note>
+
+## How the data is generated
+
+The full pipeline runs with a single command from the repository root:
+
+```bash
+make render
+```
+
+Under the hood this runs:
+
+```bash
+cargo run --manifest-path ci/Cargo.toml -p render -- \
+  --tags data/tags.yml \
+  --tools data/tools \
+  --md-out README.md \
+  --json-out data/api
+```
+
+The renderer:
+
+1. Loads `data/tags.yml` to get the full list of valid tags.
+2. Reads every `.yml` file in `data/tools/`.
+3. Validates each entry (name length, at least one tag, etc.).
+4. Resolves tag strings to full `Tag` structs.
+5. Writes `README.md` and `data/api/tools.json`.
+
+See the [renderer reference](/api/renderer) for a detailed breakdown of each step.
+
+## Use cases
+
+<CardGroup cols={2}>
+  <Card title="Build integrations" icon="plug">
+    Consume `tools.json` from any language to build dashboards, comparison sites, or internal tooling portals.
+  </Card>
+  <Card title="Command-line queries" icon="terminal">
+    Use `jq` to filter and transform the catalog directly in your shell.
+  </Card>
+  <Card title="Jupyter notebooks" icon="chart-bar">
+    Load the JSON into pandas or polars for exploratory data analysis across hundreds of tools.
+  </Card>
+  <Card title="Power analysis-tools.dev" icon="globe">
+    The website itself is rendered from this same data, so you get the same information the site shows.
+  </Card>
+</CardGroup>
+
+## Example `jq` queries
+
+The following examples assume you are running from the root of the repository.
+
+### List all tool names
+
+```bash
+jq 'keys' data/api/tools.json
+```
+
+### Find tools that support Python
+
+```bash
+jq '[to_entries[] | select(.value.languages | index("python"))] | map(.key)' \
+  data/api/tools.json
+```
+
+### Find linters only
+
+```bash
+jq '[to_entries[] | select(.value.categories | index("linter"))] | map(.key)' \
+  data/api/tools.json
+```
+
+### Count active CLI tools (excluding deprecated)
+
+```bash
+jq '[to_entries[]
+  | select(.value.types | index("cli"))
+  | select(.value.deprecated != true)
+] | length' data/api/tools.json
+```
+
+<Tip>
+  Pipe the output of any query through `jq -r '.[]'` to get plain newline-separated text instead of a JSON array — useful for shell loops.
+</Tip>
+
+## Explore further
+
+<CardGroup cols={2}>
+  <Card title="Tool schema" icon="code" href="/api/tool-schema">
+    Full field-by-field reference for a single entry in `tools.json`.
+  </Card>
+  <Card title="Tags reference" icon="tag" href="/api/tags-reference">
+    Complete list of all language and other tags you can filter by.
+  </Card>
+  <Card title="Renderer" icon="gear" href="/api/renderer">
+    How the Rust renderer validates YAML and produces JSON output.
+  </Card>
+  <Card title="Local development" icon="laptop" href="/api/local-development">
+    Set up the repository locally and run the renderer yourself.
+  </Card>
+</CardGroup>

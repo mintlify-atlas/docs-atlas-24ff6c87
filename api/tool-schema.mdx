@@ -1,0 +1,212 @@
+---
+title: 'Tool schema'
+description: 'Field-by-field reference for a single tool entry in data/api/tools.json.'
+---
+
+`data/api/tools.json` is a JSON object where each key is the slugified tool name and each value is a tool entry. This page documents every field in that entry, derived from the `ApiEntry` struct in `ci/render/src/types.rs`.
+
+## Top-level structure
+
+```json
+{
+  "<slugified-tool-name>": {
+    "name": "...",
+    "categories": [...],
+    "languages": [...],
+    "other": [...],
+    "licenses": [...],
+    "types": [...],
+    "homepage": "...",
+    ...
+  }
+}
+```
+
+The key is the tool name run through a slug function (lowercase, spaces replaced with hyphens, non-ASCII characters transliterated). For example, `"Semgrep"` becomes `"semgrep"` and `"Astrée"` becomes `"astree"`.
+
+## Fields
+
+<ResponseField name="name" type="string" required>
+  The original tool name as written in the source YAML — not slugified. For example `"Semgrep"` or `"ESLint"`. Use this field for display; use the object key for lookups.
+</ResponseField>
+
+<ResponseField name="categories" type="string[]" required>
+  One or more category labels that describe what the tool does. Valid values:
+
+  | Value | Meaning |
+  |-------|---------|
+  | `linter` | Finds bugs, style issues, or anti-patterns |
+  | `formatter` | Rewrites or reformats source code |
+  | `performance` | Measures or profiles runtime performance |
+  | `meta` | Wraps or orchestrates other tools |
+</ResponseField>
+
+<ResponseField name="languages" type="string[]" required>
+  Language tag values this tool supports. Each value corresponds to the `value` field in `tags.json` for a tag with `tag_type: "Language"`. An empty array means the tool targets non-language artifacts (e.g. Dockerfile, CI config). See the [tags reference](/api/tags-reference) for all valid values.
+</ResponseField>
+
+<ResponseField name="other" type="string[]" required>
+  Non-language tag values. Each value corresponds to the `value` field in `tags.json` for a tag with `tag_type: "Other"`. Examples: `"security"`, `"kubernetes"`, `"dockerfile"`. See the [tags reference](/api/tags-reference) for all valid values.
+</ResponseField>
+
+<ResponseField name="licenses" type="string[]" required>
+  License identifiers for the tool. Currently a single-element array containing the license string from the source YAML (e.g. `"MIT License"`, `"Apache-2.0"`, `"proprietary"`). The array format anticipates future support for multi-license tools.
+</ResponseField>
+
+<ResponseField name="types" type="string[]" required>
+  How you interact with the tool. Valid values:
+
+  | Value | Meaning |
+  |-------|---------|
+  | `cli` | Runs from the command line |
+  | `gui` | Has a graphical desktop interface |
+  | `service` | Available as a hosted/cloud service |
+  | `ide-plugin` | Distributed as an editor or IDE plugin |
+</ResponseField>
+
+<ResponseField name="homepage" type="string" required>
+  Primary URL for the tool — documentation site, project homepage, or repository landing page.
+</ResponseField>
+
+<ResponseField name="source" type="string | null">
+  URL of the source code repository. `null` when not provided (e.g. for closed-source tools). When present and pointing to a GitHub repository, the renderer can check whether the project is actively maintained.
+</ResponseField>
+
+<ResponseField name="pricing" type="string | null">
+  Free-text pricing description for commercial tools. `null` for open-source or tools without pricing information.
+</ResponseField>
+
+<ResponseField name="plans" type="object | null">
+  Map of plan name to boolean availability. Used for tools with tiered pricing. `null` when not applicable.
+
+  <Expandable title="example">
+    ```json
+    {
+      "plans": {
+        "free": true,
+        "pro": true,
+        "enterprise": true
+      }
+    }
+    ```
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+  A concise description of the tool (maximum 500 characters). Written in plain text — no Markdown.
+</ResponseField>
+
+<ResponseField name="discussion" type="string | null">
+  URL to a GitHub issue or discussion thread where the tool's deprecation was announced. Only present when the tool is deprecated. `null` otherwise.
+</ResponseField>
+
+<ResponseField name="deprecated" type="boolean | null">
+  `true` when the tool is marked as deprecated (unmaintained for over a year, or explicitly flagged). `null` is treated the same as `false`. When using the catalog for active tools, filter out entries where `deprecated` is `true`.
+</ResponseField>
+
+<ResponseField name="resources" type="array | null">
+  A list of tutorials, videos, and articles about the tool. `null` when none are available.
+
+  <Expandable title="resource object fields">
+    <ResponseField name="title" type="string" required>
+      Human-readable title of the resource.
+    </ResponseField>
+    <ResponseField name="url" type="string" required>
+      Full URL to the resource.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="reviews" type="string[] | null">
+  URLs to third-party reviews or comparisons of the tool (e.g. StackShare, OpenBase). `null` when none are listed.
+</ResponseField>
+
+<ResponseField name="demos" type="string[] | null">
+  URLs to interactive playgrounds or live demos. `null` when none are listed.
+</ResponseField>
+
+<ResponseField name="wrapper" type="boolean | null">
+  `true` when this tool is a wrapper around one or more other tools (e.g. a meta-linter that invokes multiple underlying linters). `null` is treated the same as `false`.
+</ResponseField>
+
+## Full example
+
+The following is the entry for Semgrep, derived from `data/tools/semgrep.yml`:
+
+```json
+{
+  "semgrep": {
+    "name": "Semgrep",
+    "categories": [
+      "linter"
+    ],
+    "languages": [
+      "c",
+      "csharp",
+      "go",
+      "java",
+      "javascript",
+      "jsx",
+      "ocaml",
+      "php",
+      "python",
+      "ruby",
+      "typescript"
+    ],
+    "other": [
+      "ci",
+      "configmanagement",
+      "dockerfile",
+      "json",
+      "kubernetes",
+      "nodejs",
+      "rails",
+      "security",
+      "terraform",
+      "yaml"
+    ],
+    "licenses": [
+      "GNU Lesser General Public License v2.1"
+    ],
+    "types": [
+      "cli",
+      "service"
+    ],
+    "homepage": "https://semgrep.dev",
+    "source": "https://github.com/returntocorp/semgrep",
+    "pricing": null,
+    "plans": null,
+    "description": "A fast, open-source, static analysis tool for finding bugs and enforcing code standards at editor, commit, and CI time. Its rules look like the code you already write; no abstract syntax trees or regex wrestling. Supports 17+ languages.",
+    "discussion": null,
+    "deprecated": null,
+    "resources": [
+      {
+        "title": "Semgrep Quick Start Tutorial",
+        "url": "https://www.youtube.com/watch?v=8jyp8DkhmYo"
+      },
+      {
+        "title": "Semgrep presentation by r2c at Bay Area OWASP Meetup",
+        "url": "https://www.youtube.com/watch?v=pul1bRIOYc8"
+      }
+    ],
+    "reviews": [
+      "https://stackshare.io/semgrep"
+    ],
+    "demos": [
+      "https://semgrep.dev/playground"
+    ],
+    "wrapper": null
+  }
+}
+```
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Tags reference" icon="tag" href="/api/tags-reference">
+    All valid values for the `languages` and `other` fields.
+  </Card>
+  <Card title="Tool format" icon="file" href="/contributing/tool-format">
+    The YAML format used to author tool entries before they are rendered to JSON.
+  </Card>
+</CardGroup>

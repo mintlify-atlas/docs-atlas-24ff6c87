@@ -1,0 +1,100 @@
+---
+title: "Introduction"
+description: "Analysis Tools is a curated catalog of 750+ static analysis tools, linters, formatters, and SAST scanners for every major programming language, config format, and build tool."
+---
+
+Analysis Tools is an open-source, community-maintained catalog of static analysis tools. If you want to find the right linter for your language, enforce code style, catch security bugs before they ship, or automate code review, this is your starting point.
+
+The catalog covers **750+ tools** across every major programming language, infrastructure format, config file type, and build tool. It is the source of truth behind [analysis-tools.dev](https://analysis-tools.dev/), which adds community rankings, user comments, and video resources on top of this data.
+
+## What is static analysis?
+
+Static analysis means examining source code without executing it. A static analysis tool reads your code and reports problems — style violations, potential bugs, security vulnerabilities, type errors, or formatting issues — without running the program.
+
+Because the code never runs, static analysis is fast, safe, and easy to integrate into any CI pipeline. You can catch a SQL injection, a null pointer dereference, or a misplaced semicolon on every commit, before the code reaches production.
+
+Common categories of static analysis tools include:
+
+- **Linters** — enforce coding standards and flag suspicious patterns
+- **Formatters** — automatically rewrite code to match a style guide
+- **SAST (Static Application Security Testing)** — scan for security vulnerabilities
+- **Meta-linters** — orchestrate multiple linters in a single pass
+- **Type checkers** — verify type correctness without running the program
+
+## What this catalog covers
+
+<CardGroup cols={2}>
+  <Card title="Programming languages" icon="code" href="/tools/popular-languages">
+    Tools for Python, JavaScript, TypeScript, Go, Rust, Java, C/C++, Ruby, PHP, and 40+ other languages
+  </Card>
+  <Card title="Security & SAST" icon="shield-halved" href="/tools/security-sast">
+    Dedicated security scanners, vulnerability finders, and secret detectors
+  </Card>
+  <Card title="Infrastructure & config" icon="server" href="/tools/infrastructure-config">
+    Linters for Dockerfile, Kubernetes, Terraform, Ansible, YAML, JSON, and more
+  </Card>
+  <Card title="Meta-linters" icon="list-check" href="/tools/meta-linters">
+    Tools that run multiple analyzers together and unify their output
+  </Card>
+</CardGroup>
+
+## The official website
+
+[analysis-tools.dev](https://analysis-tools.dev/) is built on top of this repository. Every tool in the `data/tools/` directory is rendered to the website automatically. The website adds:
+
+- **Community rankings** based on votes and popularity
+- **User comments** on individual tools
+- **Video resources** linked from each tool's page
+- **Tag-based filtering** to narrow the catalog by language, category, or license
+
+If you want to explore the catalog interactively, the website is the best starting point. If you want to integrate the data into your own tooling or run queries, use the [JSON API](/api/overview).
+
+## Symbol legend
+
+Three symbols annotate tools throughout the catalog:
+
+| Symbol | Meaning |
+|--------|---------|
+| © | Proprietary or closed-source. All tools without this symbol are open source. |
+| ⚠️ | Not updated in over one year, or the repository was archived. |
+| ℹ️ | The community recommends against using this tool for new projects. The icon links to the discussion issue explaining why. |
+
+<Note>
+A ⚠️ or ℹ️ symbol does not mean a tool is useless — it means you should check the linked discussion before adopting it. Many deprecated tools are still valuable for specific use cases.
+</Note>
+
+## Explore the catalog
+
+<CardGroup cols={2}>
+  <Card title="Popular languages" icon="star" href="/tools/popular-languages">
+    Python, JavaScript, TypeScript, Go, Rust, Java, C/C++
+  </Card>
+  <Card title="Systems languages" icon="microchip" href="/tools/systems-languages">
+    C, C++, Rust, Assembly, Ada, Fortran
+  </Card>
+  <Card title="Scripting languages" icon="terminal" href="/tools/scripting-languages">
+    Python, Ruby, PHP, Perl, Shell, Lua
+  </Card>
+  <Card title="Functional languages" icon="function" href="/tools/functional-languages">
+    Haskell, Elixir, Erlang, OCaml, F#, Clojure
+  </Card>
+  <Card title="Multi-language tools" icon="layer-group" href="/tools/multi-language">
+    Tools that work across many languages and stacks
+  </Card>
+  <Card title="Other languages" icon="ellipsis" href="/tools/other-languages">
+    ABAP, Ada, Assembly, ColdFusion, Delphi, and more
+  </Card>
+</CardGroup>
+
+## Contributing
+
+The catalog is maintained by the community through pull requests. Each tool is stored as a small YAML file in `data/tools/`. You do not need any special access — just open a pull request.
+
+<CardGroup cols={2}>
+  <Card title="Adding a tool" icon="plus" href="/contributing/adding-a-tool">
+    Step-by-step guide to submitting a new tool
+  </Card>
+  <Card title="Tool format reference" icon="file-code" href="/contributing/tool-format">
+    All supported fields in a tool YAML file
+  </Card>
+</CardGroup>

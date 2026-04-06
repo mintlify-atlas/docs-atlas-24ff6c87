@@ -1,0 +1,121 @@
+---
+title: "FAQ"
+description: "Answers to common questions about the Analysis Tools catalog, the JSON API, contributing, and the relationship between this repository and the website."
+---
+
+<AccordionGroup>
+
+  <Accordion title="What is static analysis?">
+    Static analysis is the practice of examining source code without executing it. A static analysis tool reads your code files and reports issues — potential bugs, style violations, security vulnerabilities, type errors, or dead code — before the program ever runs.
+
+    Because the code is never executed, static analysis is deterministic, fast, and safe to run in CI on every commit. It complements dynamic analysis (running tests, fuzzing, profiling) rather than replacing it.
+
+    Tools in this catalog perform static analysis. They range from lightweight style checkers that flag a missing semicolon, to full dataflow engines that can prove the absence of null pointer dereferences.
+  </Accordion>
+
+  <Accordion title="What's the difference between a linter, a formatter, and a SAST tool?">
+    These categories overlap in practice, but the general distinctions are:
+
+    - **Linter** — reads your code and reports rule violations or suspicious patterns without modifying the file. You decide whether to fix the issue. Examples: ESLint, Clippy, Pylint.
+    - **Formatter** — rewrites your code automatically to match a style guide. You do not make decisions; the tool does. Examples: Prettier, Black, gofmt.
+    - **SAST (Static Application Security Testing)** — focuses specifically on security vulnerabilities: injection flaws, hardcoded secrets, insecure API usage, and so on. Examples: Semgrep, Bandit, CodeQL.
+
+    Many tools blur these lines. Semgrep is a linter that ships with security-focused rules. ESLint can auto-fix some violations. The catalog tags each tool with a `categories` field (`linter`, `formatter`, `meta`) to help you filter by role.
+  </Accordion>
+
+  <Accordion title="How do I find tools for my language?">
+    The fastest way is to browse the Tools tab by language group:
+
+    - [Popular languages](/tools/popular-languages) — Python, JavaScript, TypeScript, Go, Rust, Java, C/C++
+    - [Systems languages](/tools/systems-languages) — C, C++, Rust, Assembly, Ada, Fortran
+    - [Scripting languages](/tools/scripting-languages) — Python, Ruby, PHP, Perl, Shell, Lua
+    - [Functional languages](/tools/functional-languages) — Haskell, Elixir, Erlang, OCaml, F#, Clojure
+    - [Other languages](/tools/other-languages) — ABAP, Ada, Assembly, ColdFusion, Delphi, and more
+
+    You can also search by tag on [analysis-tools.dev](https://analysis-tools.dev/), which supports tag-based filtering across the full catalog. If you want to query the data programmatically, download `data/api/tools.json` and filter by the `languages` array.
+  </Accordion>
+
+  <Accordion title="How are tools marked as deprecated or unmaintained?">
+    Two symbols appear in the catalog for tools that may no longer be the best choice:
+
+    - **⚠️** — the tool has not been updated in over one year, or its repository was archived on GitHub. This is applied automatically based on activity.
+    - **ℹ️** — the community recommends against using this tool for new projects. This is applied manually after a discussion in the repository's issue tracker. The symbol links directly to that discussion.
+
+    To mark a tool as deprecated in the YAML source, add `deprecated: true` to its entry in `data/tools/<toolname>.yml` and open a pull request with an objective explanation. Every deprecation is reviewed on a case-by-case basis.
+
+    A deprecated tool is not removed from the catalog. It remains visible so that teams already using it can still find documentation, and so that the community history is preserved.
+  </Accordion>
+
+  <Accordion title="What does the ℹ️ symbol mean?">
+    The ℹ️ symbol means the community recommends against adopting this tool for new projects. It is different from ⚠️ (unmaintained) — a tool can be actively maintained but still carry ℹ️ if there is a better alternative, if the tool has known design issues, or if the original authors have recommended a successor.
+
+    When this symbol appears on a tool entry, it always links to a GitHub issue where the decision was discussed. Read that issue before deciding whether to adopt the tool. The symbol is not a hard prohibition — it is a prompt to do your homework.
+  </Accordion>
+
+  <Accordion title="Can I use the JSON data in my own project?">
+    Yes. The JSON files in `data/api/` are part of the public repository and are free to use. The repository uses an MIT license.
+
+    `data/api/tools.json` is a flat, de-normalized map of tool name to tool data. It is easy to consume with `jq`, load into a Jupyter notebook, import in a Node or Python script, or serve from your own API endpoint.
+
+    Keep in mind that the data format can change between releases, as noted in the `data/api/README.md`. Pin to a specific commit or tag if you need stability, or watch the repository for breaking changes.
+
+    See the [API overview](/api/overview) for more details on the available fields and how to query the data.
+  </Accordion>
+
+  <Accordion title="How does a tool get listed on analysis-tools.dev?">
+    The website is built entirely from the data in this repository. To get a tool listed on the website, you add it to the repository — the website picks it up automatically on the next deployment.
+
+    <Steps>
+      <Step title="Create a YAML file">
+        Add a new file at `data/tools/<toolname>.yml` with the tool's name, description, homepage, license, tags, and categories.
+      </Step>
+      <Step title="Run the renderer">
+        Run `make render` locally to validate your entry and check for errors.
+      </Step>
+      <Step title="Open a pull request">
+        Submit a pull request. The CI pipeline runs `make render` automatically. Once the PR is merged, the tool appears in `data/api/tools.json` and on the website.
+      </Step>
+    </Steps>
+
+    See [Adding a tool](/contributing/adding-a-tool) for the full step-by-step guide and the [tool format reference](/contributing/tool-format) for every supported field.
+  </Accordion>
+
+  <Accordion title="What's the difference between this repository and the website?">
+    This repository is the **source of truth** for tool data. It contains:
+
+    - `data/tools/*.yml` — one file per tool, curated by the community
+    - `data/tags.yml` — the controlled vocabulary of language and category tags
+    - `data/api/tools.json` and `data/api/tags.json` — generated JSON for machine consumption
+    - `README.md` — a generated human-readable catalog
+
+    The website at [analysis-tools.dev](https://analysis-tools.dev/) is a **consumer** of this data. It adds features that go beyond the repository: community voting and rankings, user-submitted comments, curated video tutorials, and a searchable, filterable UI. These additions live in the website's own infrastructure and are not stored in this repository.
+
+    If you find a missing tool, incorrect data, or a broken link, the right place to fix it is this repository — not the website.
+  </Accordion>
+
+  <Accordion title="How do I report a broken link or outdated tool entry?">
+    The best way to report a broken link or outdated entry is to open a pull request that fixes it directly. Each tool lives in `data/tools/<toolname>.yml` — find the file, update the `homepage` or `description`, and submit the change.
+
+    If you cannot fix it yourself, open a GitHub issue in the repository describing the problem and which tool it affects. Maintainers and contributors monitor the issue tracker and can apply the fix.
+
+    The repository runs automated link checks in CI using a GitHub Actions workflow (`links.yml`). If a link breaks silently over time, it is usually caught by this workflow and flagged in the pull request or periodic check runs.
+  </Accordion>
+
+</AccordionGroup>
+
+## Still have questions?
+
+<CardGroup cols={2}>
+  <Card title="Contributing overview" icon="hand-holding-heart" href="/contributing/overview">
+    Learn how the contribution process works before opening a pull request
+  </Card>
+  <Card title="Tool format reference" icon="file-code" href="/contributing/tool-format">
+    Every field in the YAML tool entry, with examples and allowed values
+  </Card>
+  <Card title="How it works" icon="gears" href="/how-it-works">
+    Understand the full data pipeline from YAML to the website
+  </Card>
+  <Card title="API overview" icon="brackets-curly" href="/api/overview">
+    Use the JSON data in your own projects or integrations
+  </Card>
+</CardGroup>

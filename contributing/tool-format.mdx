@@ -1,0 +1,206 @@
+---
+title: "Tool format"
+description: "Complete YAML schema reference for tool entries in data/tools/."
+---
+
+Each tool in the catalog is a YAML file stored at `data/tools/<toolname>.yml`. The schema is defined by the `ParsedEntry` struct in `ci/render/src/types.rs`. This page documents every supported field.
+
+## Complete example
+
+The following example shows all fields together. Required fields are always present; optional fields appear only when relevant.
+
+```yaml
+name: Semgrep
+categories:
+  - linter
+tags:
+  - c
+  - csharp
+  - go
+  - java
+  - javascript
+  - python
+  - ruby
+  - security
+  - typescript
+  - yaml
+license: GNU Lesser General Public License v2.1
+types:
+  - cli
+  - service
+source: 'https://github.com/returntocorp/semgrep'
+homepage: 'https://semgrep.dev'
+pricing: Free tier available; paid plans for teams
+description: >-
+  A fast, open-source, static analysis tool for finding bugs and enforcing
+  code standards at editor, commit, and CI time. Its rules look like the code
+  you already write; no abstract syntax trees or regex wrestling.
+  Supports 17+ languages.
+resources:
+  - title: Semgrep Quick Start Tutorial
+    url: https://www.youtube.com/watch?v=8jyp8DkhmYo
+  - title: Semgrep presentation by r2c at Bay Area OWASP Meetup
+    url: https://www.youtube.com/watch?v=pul1bRIOYc8
+reviews:
+  - https://stackshare.io/semgrep
+demos:
+  - https://semgrep.dev/playground
+wrapper: false
+```
+
+## Field reference
+
+### Required fields
+
+<ParamField path="name" type="string" required>
+  The tool's official display name. Preserve original capitalisation — `ESLint`, not `eslint`; `clippy`, not `Clippy`. The renderer uses the lowercase, hyphenated form of the name as the file's expected filename.
+</ParamField>
+
+<ParamField path="categories" type="string[]" required>
+  One or more category values describing what the tool does. Must be a list even when there is only one value. Accepted values:
+
+  - `linter` — checks code for errors, style violations, or potential bugs
+  - `formatter` — automatically reformats code to a consistent style
+  - `performance` — identifies performance bottlenecks or inefficiencies
+  - `meta` — runs or aggregates multiple other tools (meta-linter)
+</ParamField>
+
+<ParamField path="tags" type="string[]" required>
+  One or more tag slugs from `data/tags.yml`. Tags identify the languages, platforms, and formats the tool supports. Use as many relevant tags as possible — they power the filters on the website.
+
+  All valid tag values are documented in [Tags](/contributing/tags). Examples: `python`, `typescript`, `dockerfile`, `security`, `kubernetes`.
+</ParamField>
+
+<ParamField path="license" type="string" required>
+  The tool's software license. Use a full SPDX license name such as `MIT License`, `Apache-2.0`, or `GNU General Public License v3.0`. For closed-source tools, use the literal string `proprietary`.
+</ParamField>
+
+<ParamField path="types" type="string[]" required>
+  One or more values describing how the tool is delivered. Accepted values:
+
+  - `cli` — command-line interface tool invoked from a terminal
+  - `gui` — graphical desktop application
+  - `service` — hosted service or SaaS offering
+  - `ide-plugin` — plugin or extension for an IDE or code editor
+</ParamField>
+
+<ParamField path="homepage" type="string" required>
+  The primary URL for the tool. This is the URL displayed as the main link in the catalog. Use the official project website if one exists; otherwise use the GitHub repository URL.
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  A plain-text description of the tool. Keep it under 500 characters (community guideline from `CONTRIBUTING.md`). Use the YAML `>-` block scalar for multi-line descriptions — it collapses newlines into spaces and strips the trailing newline.
+
+  Write factually in third person. State what the tool does, what languages it supports, and any notable characteristics. Avoid promotional language.
+
+  ```yaml
+  description: >-
+    ShellCheck, a static analysis tool that gives warnings and suggestions for
+    bash/sh shell scripts.
+  ```
+</ParamField>
+
+### Optional fields
+
+<ParamField path="source" type="string">
+  URL to the tool's source code repository, typically on GitHub. Include this whenever the source is publicly available, even if `homepage` already points to a GitHub repository.
+
+  ```yaml
+  source: 'https://github.com/koalaman/shellcheck'
+  ```
+</ParamField>
+
+<ParamField path="deprecated" type="boolean" default="false">
+  Set to `true` when a tool is no longer maintained or has been superseded. Deprecated tools remain in the catalog but are visually flagged with a warning symbol. Do not delete YAML files for deprecated tools.
+
+  ```yaml
+  deprecated: true
+  ```
+</ParamField>
+
+<ParamField path="discussion" type="string">
+  URL to a GitHub issue or discussion thread that explains why the tool was marked deprecated. Only relevant when `deprecated: true` is set.
+
+  ```yaml
+  discussion: 'https://github.com/analysis-tools-dev/static-analysis/issues/223'
+  ```
+</ParamField>
+
+<ParamField path="resources" type="object[]">
+  A list of tutorials, videos, articles, or other learning resources. Each item requires both a `title` and a `url`.
+
+  ```yaml
+  resources:
+    - title: ESLint Tutorial with VSCode
+      url: https://www.youtube.com/watch?v=fslNny60HzI
+    - title: VSCode ESLint, Prettier & Airbnb Style Guide Setup
+      url: https://www.youtube.com/watch?v=SydnKbGc7W8
+  ```
+</ParamField>
+
+<ParamField path="reviews" type="string[]">
+  A list of URLs to external reviews, comparisons, or community discussions about the tool. StackShare profiles and similar aggregator pages are common values.
+
+  ```yaml
+  reviews:
+    - https://stackshare.io/eslint
+    - https://openbase.com/js/eslint/reviews
+  ```
+</ParamField>
+
+<ParamField path="demos" type="string[]">
+  A list of URLs to interactive demos or playgrounds where users can try the tool in a browser.
+
+  ```yaml
+  demos:
+    - https://eslint.org/play/
+  ```
+</ParamField>
+
+<ParamField path="wrapper" type="boolean" default="false">
+  Set to `true` if this tool is a wrapper around one or more other tools rather than an independent analysis engine. Meta-linters that delegate to underlying tools should set this field.
+
+  ```yaml
+  wrapper: true
+  ```
+</ParamField>
+
+<ParamField path="pricing" type="string">
+  A short plain-text description of the tool's pricing model. Use this field for commercial or freemium tools where pricing information is useful context for evaluators.
+
+  ```yaml
+  pricing: Free for open source; paid plans from $15/month
+  ```
+</ParamField>
+
+## Validation
+
+Run `make render` from the repository root to validate your YAML before opening a pull request. The renderer checks:
+
+- All required fields are present
+- `categories` values are one of the four accepted strings
+- `types` values are one of the four accepted strings
+- All `tags` values exist in `data/tags.yml`
+- Tool name is 50 characters or fewer
+- Tool has at least one tag
+
+```bash
+make render
+```
+
+If validation passes, the command regenerates `README.md` and the `data/api/` JSON output without errors.
+
+<Note>
+  The `README.md` at the repository root is generated output. Never edit it manually — your changes will be overwritten the next time `make render` runs.
+</Note>
+
+## More
+
+<CardGroup cols={2}>
+  <Card title="Adding a tool" icon="plus" href="/contributing/adding-a-tool">
+    Step-by-step walkthrough for creating and submitting a tool entry
+  </Card>
+  <Card title="Tags" icon="tag" href="/contributing/tags">
+    Full list of valid tag values for the tags field
+  </Card>
+</CardGroup>

@@ -1,0 +1,192 @@
+---
+title: "How it works"
+description: "The catalog is driven by YAML source files, a Rust renderer, and a machine-readable JSON API. This page explains the full data pipeline."
+---
+
+Every tool in the Analysis Tools catalog is stored as a YAML file. A Rust-based renderer reads those files and produces two outputs: the human-readable `README.md` and a machine-readable JSON API. The website at [analysis-tools.dev](https://analysis-tools.dev/) consumes the JSON API to power its search, filtering, and ranking features.
+
+## Repository structure
+
+```
+static-analysis/
+├── data/
+│   ├── tools/           # One .yml file per tool (source of truth)
+│   │   ├── eslint.yml
+│   │   ├── clippy.yml
+│   │   └── semgrep.yml
+│   ├── tags.yml         # All valid tags (languages and other categories)
+│   └── api/             # Rendered JSON output (do not edit directly)
+│       ├── tools.json
+│       └── tags.json
+├── ci/
+│   └── render/          # Rust renderer source
+│       └── src/
+│           └── types.rs
+├── Makefile
+└── README.md            # Rendered output (do not edit directly)
+```
+
+The `data/tools/` directory is the only place you should make changes. The `README.md` and everything under `data/api/` are generated — editing them manually will be overwritten on the next render.
+
+## The YAML tool format
+
+Each tool is a single YAML file. Here is a real example from the repository — the entry for `clippy`, Rust's built-in linter:
+
+```yaml
+name: clippy
+categories:
+  - linter
+tags:
+  - rust
+license: Apache-2.0, MIT license
+types:
+  - cli
+source: "https://github.com/rust-lang/rust-clippy"
+homepage: "https://rust-lang.github.io/rust-clippy"
+demos:
+  - https://play.rust-lang.org
+resources:
+  - title: Rust For Beginners Tutorial - Linting with Clippy
+    url: https://www.youtube.com/watch?v=BE9KY6X7aUM
+description: A code linter to catch common mistakes and improve your Rust code.
+```
+
+And here is a more complete example — the entry for `ESLint`:
+
+```yaml
+name: ESLint
+categories:
+  - linter
+tags:
+  - javascript
+  - typescript
+  - jsx
+license: MIT License
+types:
+  - cli
+source: "https://github.com/eslint/eslint"
+homepage: "https://github.com/eslint/eslint"
+description: An extensible linter for JS, following the ECMAScript standard.
+reviews:
+  - https://stackshare.io/eslint
+  - https://openbase.com/js/eslint/reviews
+demos:
+  - https://eslint.org/play/
+resources:
+  - title: ESLint Tutorial with VSCode
+    url: https://www.youtube.com/watch?v=fslNny60HzI
+  - title: VSCode ESLint, Prettier & Airbnb Style Guide Setup
+    url: https://www.youtube.com/watch?v=SydnKbGc7W8
+```
+
+For the full field reference, see [Tool format](/contributing/tool-format). For all valid tag values, see [Tags reference](/api/tags-reference).
+
+## The tags file
+
+`data/tags.yml` lists every valid tag name and value. Tags have two types: `language` and `other`. When you add a new tool, all of its `tags` values must exist in `data/tags.yml` — the renderer will reject unknown tags.
+
+```yaml
+- name: Rust
+  value: rust
+  type: language
+
+- name: Security/SAST
+  value: security
+  type: other
+
+- name: Dockerfile
+  value: dockerfile
+  type: other
+```
+
+The `value` field is what you use in a tool's `tags` array. The `name` field is the human-readable label shown in the README and on the website.
+
+## How `make render` works
+
+The `make render` command runs the Rust renderer in `ci/render/`. It reads all `.yml` files from `data/tools/`, validates them against `data/tags.yml`, and produces two outputs:
+
+<Steps>
+  <Step title="Validation">
+    The renderer parses every tool YAML file and validates each tag value against `data/tags.yml`. If a tag is invalid or a required field is missing, the build fails with an error pointing to the offending file.
+  </Step>
+  <Step title="README generation">
+    The renderer groups tools by tag (languages first, then other categories) and writes the full `README.md` using an Askama template. This is the file you see when you browse the repository on GitHub.
+  </Step>
+  <Step title="JSON API generation">
+    The renderer writes `data/api/tools.json` and `data/api/tags.json`. Each tool entry in the JSON is de-normalized — the tag names are expanded and the tool's languages and other categories are stored as separate lists for easy querying.
+  </Step>
+</Steps>
+
+The full command is:
+
+```bash
+make render
+```
+
+Which runs:
+
+```bash
+cargo run --manifest-path ci/Cargo.toml -p render \
+  -- --tags data/tags.yml \
+     --tools data/tools \
+     --md-out README.md \
+     --json-out data/api
+```
+
+### Skipping deprecated tools
+
+If you want to render the catalog without tools marked `deprecated: true`, use:
+
+```bash
+make render-skip-deprecated
+```
+
+This produces the same outputs but excludes any tool entry that has `deprecated: true` in its YAML file. This is useful for generating a clean list of actively maintained tools.
+
+<Note>
+The CI pipeline always runs `make render` (including deprecated tools) so that the deprecation markers are visible in the output. The `render-skip-deprecated` target is intended for consumers who only want currently maintained tools.
+</Note>
+
+## The JSON API
+
+The rendered `data/api/` directory contains two files:
+
+### `tools.json`
+
+A JSON object where each key is the tool's name and the value is the tool's full data record. The schema mirrors the YAML fields, with tags expanded into separate `languages` and `other` arrays:
+
+```json
+{
+  "ESLint": {
+    "name": "ESLint",
+    "categories": ["linter"],
+    "languages": ["JavaScript", "TypeScript", "JSX"],
+    "other": [],
+    "licenses": ["MIT License"],
+    "types": ["cli"],
+    "homepage": "https://github.com/eslint/eslint",
+    "source": "https://github.com/eslint/eslint",
+    "description": "An extensible linter for JS, following the ECMAScript standard.",
+    "deprecated": null,
+    "resources": [...],
+    "reviews": [...],
+    "demos": [...]
+  }
+}
+```
+
+### `tags.json`
+
+A list of all tags with their names, values, and types. This mirrors `data/tags.yml` but in JSON format, useful for building tag-based filters.
+
+For full schema documentation, see [Tool schema](/api/tool-schema) and [Tags reference](/api/tags-reference).
+
+## How the website consumes this data
+
+[analysis-tools.dev](https://analysis-tools.dev/) reads `data/api/tools.json` and `data/api/tags.json` to power its catalog. Every time a pull request is merged to the main branch, the CI pipeline runs `make render`, commits the updated JSON files, and the website picks up the new data on the next deployment.
+
+The website adds features on top of the raw data — community rankings, user comments, and video resources — but the canonical tool list always comes from this repository.
+
+<Tip>
+You can use `tools.json` directly in your own projects. It is a flat, de-normalized format that is easy to query with `jq`, load into a Jupyter notebook, or serve from your own API endpoint. See the [API overview](/api/overview) for more details.
+</Tip>

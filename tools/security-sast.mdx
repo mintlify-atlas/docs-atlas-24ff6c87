@@ -1,0 +1,174 @@
+---
+title: "Security & SAST"
+description: "Security-focused static analysis tools — SAST platforms, secret scanners, dependency vulnerability scanners, container security tools, and language-specific security analyzers."
+---
+
+Security-focused static analysis — often called SAST (Static Application Security Testing) — finds vulnerabilities in source code before they reach production. These tools look for injection flaws, hardcoded secrets, insecure configurations, vulnerable dependencies, and many other classes of security issues.
+
+This page covers the tools tagged with `security` in the catalog, organized by what they scan.
+
+<Note>
+  The symbol © marks proprietary tools. ⚠️ means the tool has not been updated in over a year or the repository was archived.
+</Note>
+
+<Tip>
+  Many tools in this page also appear elsewhere in the catalog — for instance, Semgrep and CodeQL are universal analyzers with strong security rule sets, and Trivy also appears in the containers category. Use the `security` tag on [analysis-tools.dev](https://analysis-tools.dev/) to filter the full list.
+</Tip>
+
+## SAST platforms
+
+Full-featured SAST platforms perform deep analysis of source code and typically support many languages from a single tool.
+
+| Tool | Languages | License | Notes |
+|------|-----------|---------|-------|
+| [Semgrep](https://semgrep.dev) | 17+ languages | LGPL-2.1 | Rule-based pattern matching; Semgrep Pro adds taint analysis |
+| [CodeQL](https://github.com/github/codeql) | C, C++, C#, Java, JS, TS, Python | MIT | Dataflow and semantic queries; built into GitHub Code Scanning |
+| [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing) © | Many | Proprietary | Commercial SAST, no pre-compilation required |
+| [Veracode](https://www.veracode.com/security/static-code-analysis) © | Java, .NET, JS, Swift, Obj-C, C, C++, and more | Proprietary | Scans binaries and bytecode as well as source |
+| [Fortify](https://www.microfocus.com/en-us/cyberres/application-security/static-code-analyzer) © | C/C++, Java, JS, Python, Ruby, Swift, PHP, and many more | Proprietary | Commercial platform by Micro Focus |
+| [Coverity](https://www.synopsys.com/software-integrity/security-testing/static-analysis-sast.html) © | 20+ languages | Proprietary | Synopsys Coverity; supports Ruby on Rails, Scala, and more |
+| [Bearer](https://github.com/bearer/bearer) | Multiple | Open source | Discovers and prioritizes security risks around sensitive data |
+| [brakeman](https://brakemanscanner.org) | Ruby on Rails | MIT | Security vulnerability scanner for Rails applications |
+| [gosec](https://github.com/securego/gosec) | Go | Apache-2.0 | Inspects Go source code for security problems |
+| [bandit](https://bandit.readthedocs.io) | Python | Apache-2.0 | Finds common security issues in Python code |
+
+### Semgrep for security
+
+Semgrep ships with a large library of security rules covering OWASP Top 10, CWE, and language-specific vulnerability classes. You can run security-focused rulesets without writing any rules yourself:
+
+```bash
+semgrep --config "p/security-audit" .
+semgrep --config "p/owasp-top-ten" .
+```
+
+Semgrep Pro (© commercial) adds inter-file taint analysis and supply chain vulnerability scanning.
+
+### Bearer
+
+Bearer is an open-source static code analysis tool that discovers, filters, and prioritizes security risks and vulnerabilities leading to sensitive data exposures (PII, PHI, PD). It is highly configurable and easily extensible, built for security and engineering teams.
+
+## Secret scanning
+
+Secrets — API keys, passwords, tokens — accidentally committed to source code are one of the most common causes of breaches. These tools scan your git history and file contents to find them.
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [Gitleaks](https://github.com/zricethezav/gitleaks) | MIT | Detects hardcoded secrets like passwords, API keys, and tokens in git repos |
+| [TruffleHog](https://trufflesecurity.com) | AGPL-3.0 | Scans your entire tech stack for exposed credentials |
+| [detect-secrets](https://github.com/Yelp/detect-secrets) | Apache-2.0 | Enterprise-friendly secret detection using heuristic regex patterns |
+| [Credential Digger](https://github.com/SAP/credential-digger) | Apache-2.0 | GitHub scanning with ML-based false positive filtering |
+| [GitGuardian ggshield](https://www.gitguardian.com/ggshield) | MIT | CLI for detecting 350+ types of secrets; runs locally or in CI |
+
+### Gitleaks
+
+Gitleaks is a SAST tool for detecting hardcoded secrets like passwords, API keys, and tokens in git repos. It scans the full commit history and is designed for CI integration:
+
+```bash
+# Scan the current repo
+gitleaks detect --source . --report-format json --report-path report.json
+
+# Scan a specific git ref range (useful in CI)
+gitleaks detect --log-opts="HEAD~10..HEAD"
+```
+
+### TruffleHog
+
+TruffleHog is an open-source secret-scanning engine that resolves exposed secrets across your company's entire tech stack. It verifies discovered credentials against live services to identify which secrets are actually valid and exploitable.
+
+## Dependency vulnerability scanning
+
+Your application code may be clean, but the packages you depend on may not be. These tools scan your dependency manifests and lock files against databases of known vulnerabilities.
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [trivy](https://github.com/aquasecurity/trivy) | Apache-2.0 | Vulnerability scanner for containers, filesystems, repos; covers OS packages and app dependencies |
+| [Grype](https://github.com/anchore/grype) | Apache-2.0 | Vulnerability scanner for container images and filesystems; supports SBOM and VEX |
+| [OSV-Scanner](https://osv.dev/) | Apache-2.0 | Google's scanner using the OSV.dev database; supports lockfiles, SBOMs, containers |
+| [Snyk Code](https://snyk.io) © | Proprietary (free tier) | AI-powered SAST + SCA for Java, JS, Python, PHP, C#, Go, TS |
+| [OWASP Dependency Check](https://owasp.org/www-project-dependency-check/) | Apache-2.0 | OWASP project; identifies known CVEs in project dependencies |
+| [Safety](https://safetycli.com/) | MIT | Python dependency vulnerability scanner by PyPA |
+| [pip-audit](https://github.com/pypa/pip-audit) | Apache-2.0 | Official PyPA tool for scanning Python packages for known vulnerabilities |
+
+### trivy
+
+Trivy is a simple and comprehensive vulnerability scanner for containers and other artifacts, suitable for CI. It detects vulnerabilities of OS packages (Alpine, RHEL, CentOS, etc.) and application dependencies (Bundler, Composer, npm, yarn, etc.) and checks containers and filesystems.
+
+```bash
+# Scan a container image
+trivy image python:3.12-slim
+
+# Scan the local filesystem
+trivy fs --scanners vuln,secret .
+```
+
+### OSV-Scanner
+
+OSV-Scanner is written in Go and uses data from the [OSV.dev](https://osv.dev/) open vulnerability database. It scans dependency lockfiles, SBOMs, and container images across multiple languages and package managers for known vulnerabilities. It also supports guided remediation to suggest fix paths.
+
+## Container security
+
+These tools analyze Docker images and running containers for vulnerabilities, misconfigurations, and compliance issues.
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [trivy](https://github.com/aquasecurity/trivy) | Apache-2.0 | All-in-one scanner covering OS packages, app deps, secrets, and misconfigs |
+| [Dockle](https://github.com/goodwithtech/dockle) ⚠️ | Apache-2.0 | Container image linter checking CIS Benchmark compliance |
+| [Clair](https://github.com/coreos/clair) | Apache-2.0 | Vulnerability static analysis for containers by CoreOS/Red Hat |
+| [anchore](https://anchore.io) | Apache-2.0 | Analyze and certify container images using user-defined acceptance policies |
+| [Grype](https://github.com/anchore/grype) | Apache-2.0 | Anchore's standalone vulnerability scanner for images and filesystems |
+| [kics](https://kics.io/) | Apache-2.0 | Finds security vulnerabilities and misconfigurations in IaC including Docker |
+
+**Dockle** ⚠️ is a container image linter for security that helps you build best-practice Docker images. It scans for security vulnerabilities and CIS Benchmark compliance, checking for secrets, credential exposure, and security best practices.
+
+## Language-specific security tools
+
+Some security analyzers focus on a single language or framework where they can provide deeper analysis.
+
+| Tool | Language | License | Notes |
+|------|----------|---------|-------|
+| [bandit](https://bandit.readthedocs.io) | Python | Apache-2.0 | Finds common security issues in Python code |
+| [gosec](https://github.com/securego/gosec) | Go | Apache-2.0 | Inspects Go source code for security problems |
+| [brakeman](https://brakemanscanner.org) | Ruby/Rails | MIT | Security vulnerability scanner for Ruby on Rails applications |
+| [Bearer](https://github.com/bearer/bearer) | Multiple | Open source | Security risks around sensitive data (PII, PHI) |
+| [njsscan](https://github.com/ajinabraham/njsscan) ⚠️ | Node.js | LGPL-3.0 | SAST tool for insecure code patterns in Node.js applications |
+| [NodeJSScan](https://github.com/ajinabraham/NodeJsScan) ⚠️ | Node.js | LGPL-3.0 | Static security code scanner for Node.js with a web UI |
+| [Find Security Bugs](https://find-sec-bugs.github.io) | Java | LGPL-3.0 | SpotBugs plugin for security audits of Java web apps and Android apps |
+
+### bandit
+
+Bandit is a tool for finding common security issues in Python code. It processes each file, builds an AST, and runs appropriate plugins against the AST nodes. It produces a report of all issues found.
+
+```bash
+pip install bandit
+bandit -r src/
+```
+
+### brakeman
+
+Brakeman scans Ruby on Rails applications for security vulnerabilities without requiring a running application. It checks for SQL injection, XSS, CSRF, mass assignment, and dozens of other Rails-specific issues.
+
+## Open-source supply chain
+
+Beyond direct dependencies, these tools assess the security posture of open-source packages and the projects that produce them.
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [scorecard](https://github.com/ossf/scorecard) | Apache-2.0 | Security health metrics for open-source projects from the OpenSSF |
+| [OWASP Dependency Check](https://owasp.org/www-project-dependency-check/) | Apache-2.0 | Identifies known CVEs in project dependencies |
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Multi-language tools" icon="layer-group" href="/tools/multi-language">
+    Universal analyzers including Semgrep, CodeQL, and SonarQube
+  </Card>
+  <Card title="Infrastructure & config" icon="server" href="/tools/infrastructure-config">
+    IaC security tools for Terraform, Kubernetes, and cloud configs
+  </Card>
+  <Card title="Tags reference" icon="tag" href="/api/tags-reference">
+    Full list of catalog tags including the security tag
+  </Card>
+  <Card title="Contributing a tool" icon="plus" href="/contributing/adding-a-tool">
+    Add a security tool to the catalog
+  </Card>
+</CardGroup>

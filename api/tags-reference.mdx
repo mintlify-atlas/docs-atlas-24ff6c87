@@ -1,0 +1,231 @@
+---
+title: 'Tags reference'
+description: 'Complete list of all language and other tags used to categorize tools in the catalog.'
+---
+
+Tags are the primary filter mechanism on [analysis-tools.dev](https://analysis-tools.dev) and in the JSON API. Every tool must have at least one tag from `data/tags.yml`, or the renderer will reject it.
+
+## Tag types
+
+There are two kinds of tags:
+
+| Type | Description |
+|------|-------------|
+| `language` | A programming language the tool analyzes (e.g. Python, Go, Rust). |
+| `other` | A non-language category, framework, or artifact type (e.g. security, Kubernetes, Dockerfile). |
+
+In `data/api/tools.json` these appear as two separate arrays on each tool entry:
+
+- `languages` — contains the `value` strings of all `language` tags for that tool.
+- `other` — contains the `value` strings of all `other` tags for that tool.
+
+## Tag JSON structure
+
+Each tag in `data/api/tags.json` has the following shape:
+
+```json
+{
+  "name": "Python",
+  "value": "python",
+  "tag_type": "Language"
+}
+```
+
+<ResponseField name="name" type="string" required>
+  Human-readable display name shown on the website and in the README (e.g. `"Python"`, `"Security/SAST"`).
+</ResponseField>
+
+<ResponseField name="value" type="string" required>
+  Machine-readable slug used in tool YAML files and in the JSON API arrays (e.g. `"python"`, `"security"`). This is the value you filter on in `jq` queries.
+</ResponseField>
+
+<ResponseField name="tag_type" type="string" required>
+  Either `"Language"` or `"Other"`.
+</ResponseField>
+
+## Language tags
+
+These tags represent programming languages. A tool tagged with a language is expected to analyze source code written in that language.
+
+| Name | Value |
+|------|-------|
+| .NET | `dotnet` |
+| ABAP | `abap` |
+| ActionScript | `actionscript` |
+| Active Server Pages | `asp` |
+| Ada | `ada` |
+| Apex | `apex` |
+| ASP.NET | `aspnet` |
+| Assembly | `asm` |
+| Awk | `awk` |
+| C | `c` |
+| C# | `csharp` |
+| C++ | `cpp` |
+| Clojure | `clojure` |
+| COBOL | `cobol` |
+| CoffeeScript | `coffeescript` |
+| ColdFusion | `coldfusion` |
+| Crystal | `crystal` |
+| Dart | `dart` |
+| Delphi | `delphi` |
+| Dlang | `dlang` |
+| Elixir | `elixir` |
+| Elm | `elm` |
+| Erlang | `erlang` |
+| F# | `fsharp` |
+| Fortran | `fortran` |
+| Go | `go` |
+| Groovy | `groovy` |
+| Haskell | `haskell` |
+| Haxe | `haxe` |
+| Java | `java` |
+| JavaScript | `javascript` |
+| JavaServer Pages | `jsp` |
+| Jimple | `jimple` |
+| JSX | `jsx` |
+| Julia | `julia` |
+| Kotlin | `kotlin` |
+| Lightning Web Components | `lwc` |
+| Lisp | `lisp` |
+| Lua | `lua` |
+| MATLAB | `matlab` |
+| Nim | `nim` |
+| Objective C | `objectivec` |
+| Ocaml | `ocaml` |
+| Pascal | `pascal` |
+| Perl | `perl` |
+| PHP | `php` |
+| PL/SQL | `plsql` |
+| PowerShell | `powershell` |
+| Python | `python` |
+| R | `r` |
+| Raku | `raku` |
+| Rego | `rego` |
+| Ruby | `ruby` |
+| Rust | `rust` |
+| Scala | `scala` |
+| Shell | `shell` |
+| SQL | `sql` |
+| Swift | `swift` |
+| Tcl | `tcl` |
+| TSQL | `tsql` |
+| TypeScript | `typescript` |
+| VBScript | `vbscript` |
+| Verilog/SystemVerilog | `verilog` |
+| Vim Script | `vim-script` |
+| Visual Basic | `vbasic` |
+| Visual Basic .NET | `vbnet` |
+| Visual Basic for Applications (VBA) | `vba` |
+| Visualforce | `visualforce` |
+| WebAssembly | `wasm` |
+
+## Other tags
+
+These tags cover frameworks, infrastructure technologies, file formats, and cross-cutting concerns that are not programming languages themselves.
+
+| Name | Value |
+|------|-------|
+| .env | `dotenv` |
+| Ansible | `ansible` |
+| Archive | `archive` |
+| Azure Resource Manager | `arm` |
+| Binaries | `binary` |
+| Build tools | `buildtool` |
+| Cloud Formation | `cloudformation` |
+| Config Files | `configfile` |
+| Configuration Management | `configmanagement` |
+| Containers | `container` |
+| Continuous Integration | `ci` |
+| CSS/SASS/SCSS | `css` |
+| Deno | `deno` |
+| Dockerfile | `dockerfile` |
+| Embedded Ruby (a.k.a. ERB, eRuby) | `erb` |
+| Embedded | `embedded` |
+| Gherkin | `gherkin` |
+| Ghidra | `ghidra` |
+| git | `git` |
+| HTML | `html` |
+| JSON | `json` |
+| Kubernetes | `kubernetes` |
+| Laravel | `laravel` |
+| LaTeX | `latex` |
+| Less | `less` |
+| Makefiles | `make` |
+| Markdown | `markdown` |
+| Metalinter | `meta` |
+| Mobile | `mobile` |
+| Nix | `nix` |
+| Node.js | `nodejs` |
+| Packages | `package` |
+| PhoneGap | `phonegap` |
+| Prometheus | `prometheus` |
+| Protocol Buffers | `protobuf` |
+| Puppet | `puppet` |
+| Rails | `rails` |
+| Security/SAST | `security` |
+| Smart Contracts | `smart-contracts` |
+| Support | `support` |
+| Spring | `spring` |
+| Template-Languages | `template` |
+| Terraform | `terraform` |
+| Translation | `translation` |
+| Vue.js | `vue` |
+| Writing | `writing` |
+| XML | `xml` |
+| YAML | `yaml` |
+
+## Querying by tag
+
+### Find all tools with a specific language tag
+
+```bash
+jq '[to_entries[]
+  | select(.value.languages | index("rust"))
+] | map(.key)' data/api/tools.json
+```
+
+### Find all tools with a specific "other" tag
+
+```bash
+jq '[to_entries[]
+  | select(.value.other | index("security"))
+] | map(.key)' data/api/tools.json
+```
+
+### Find tools matching both a language and an "other" tag
+
+```bash
+jq '[to_entries[]
+  | select(.value.languages | index("python"))
+  | select(.value.other | index("security"))
+] | map(.key)' data/api/tools.json
+```
+
+### List all tags in use across the catalog
+
+```bash
+# All language values actually referenced by at least one tool
+jq '[.[].languages[]] | unique | sort' data/api/tools.json
+
+# All "other" values actually referenced by at least one tool
+jq '[.[].other[]] | unique | sort' data/api/tools.json
+```
+
+<Tip>
+  The full canonical tag list — including tags not yet used by any tool — lives in `data/api/tags.json`. The queries above only show tags that appear in at least one tool entry.
+</Tip>
+
+## Adding a new tag
+
+New tags must be added to `data/tags.yml` before you can use them in a tool's `.yml` file. See the [contributing tags guide](/contributing/tags) for the process.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="API overview" icon="database" href="/api/overview">
+    High-level introduction to the JSON API and example queries.
+  </Card>
+  <Card title="Contributing tags" icon="tag" href="/contributing/tags">
+    How to propose and add new tags to the catalog.
+  </Card>
+</CardGroup>

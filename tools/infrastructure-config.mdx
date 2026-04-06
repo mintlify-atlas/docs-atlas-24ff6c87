@@ -1,0 +1,201 @@
+---
+title: "Infrastructure & config"
+description: "Static analysis tools for infrastructure-as-code, configuration files, and cloud resources — Kubernetes, Terraform, Docker, Ansible, CloudFormation, YAML, JSON, HTML, and CSS."
+---
+
+Modern applications are not just source code. Kubernetes manifests, Terraform modules, Dockerfiles, Ansible playbooks, and cloud configuration templates are equally important to get right. Misconfigured infrastructure is one of the most common causes of security incidents and outages.
+
+This page covers tools for linting and analyzing infrastructure-as-code (IaC) files and configuration formats. These tools surface security misconfigurations, policy violations, and best practice gaps before you deploy.
+
+<Note>
+  The symbol © marks proprietary tools. ⚠️ means the tool has not been updated in over a year or the repository was archived.
+</Note>
+
+## Kubernetes
+
+Kubernetes YAML manifests can be verbose and error-prone. These tools validate your manifests and Helm charts against security policies, best practices, and schema correctness.
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [kube-linter](https://github.com/stackrox/kube-linter) | Apache-2.0 | Checks YAML files and Helm charts against best practices |
+| [kube-score](https://kube-score.com) | MIT | Static code analysis of Kubernetes object definitions |
+| [kubeconform](https://github.com/yannh/kubeconform) | Apache-2.0 | Fast manifest validator with support for custom resources (CRDs) |
+| [kubeval](https://github.com/instrumenta/kubeval) ⚠️ | Apache-2.0 | Validates Kubernetes configuration files against schema |
+| [clusterlint](https://github.com/digitalocean/clusterlint) | Apache-2.0 | Queries live clusters for resources and runs checks; non-invasive |
+| [krane](https://github.com/appvia/krane) | Apache-2.0 | Kubernetes RBAC static analysis tool; identifies security risks in RBAC design |
+| [Datree](https://datree.io/) | Apache-2.0 | CLI to prevent misconfigurations; enforces policies and best practices |
+| [klint](https://github.com/uswitch/klint) | Apache-2.0 | Listens to Kubernetes resource changes and lints them against rules |
+| [kics](https://kics.io/) | Apache-2.0 | Finds security vulnerabilities and misconfigurations across IaC including Kubernetes |
+| [chart-testing](https://github.com/helm/chart-testing) | Apache-2.0 | Helm chart linting and testing tool |
+
+### kube-linter
+
+KubeLinter is a static analysis tool that checks Kubernetes YAML files and Helm charts to ensure the applications they represent adhere to best practices. It is maintained by StackRox (Red Hat) and checks for things like:
+
+- Containers running as root
+- Missing resource limits
+- Using the `latest` image tag
+- Missing liveness and readiness probes
+
+```bash
+# Install and lint a directory of manifests
+kube-linter lint manifests/
+```
+
+### kubeconform
+
+Kubeconform is a fast Kubernetes manifest validator that supports custom resource definitions (CRDs). It is designed to stay close to [kubeval](https://analysis-tools.dev/tool/kubeval) but adds high performance (multiple goroutines), configurable schema locations for CRDs, and uses an up-to-date self-updating schema registry.
+
+```bash
+kubeconform -summary manifests/
+```
+
+### krane
+
+Krane is a simple Kubernetes RBAC static analysis tool. It identifies potential security risks in RBAC design and makes suggestions on how to mitigate them. It presents the current RBAC security posture in a dashboard and lets you navigate through the definition.
+
+## Terraform
+
+Terraform HCL files define cloud infrastructure. These tools catch security misconfigurations, policy violations, and errors that `terraform plan` cannot detect.
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [tflint](https://github.com/wata727/tflint) | MPL-2.0 | Detects errors that terraform plan cannot catch; provider-specific rules |
+| [tfsec](https://github.com/tfsec/tfsec) | MIT | Security analysis for Terraform; checks AWS, Azure, and GCP best practices |
+| [checkov](https://www.checkov.io) | Apache-2.0 | Static analysis for Terraform (tf>=v0.12); prevents cloud misconfigs at build time |
+| [terrascan](https://github.com/cesar-rodriguez/terrascan) | Apache-2.0 | Security and best practice tests for Terraform templates |
+| [terraform-compliance](https://terraform-compliance.com) | MIT | Lightweight BDD test framework for Terraform; compliance and security focused |
+| [kics](https://kics.io/) | Apache-2.0 | Finds security vulnerabilities and misconfigurations in Terraform and other IaC |
+
+### tfsec
+
+tfsec is a static analysis tool that prevents potential security issues by checking cloud misconfigurations at build time. It integrates directly with the HCL parser for accurate results and checks for violations of AWS, Azure, and GCP security best practice recommendations.
+
+```bash
+# Install and run tfsec
+brew install tfsec   # or: go install github.com/tfsec/tfsec/cmd/tfsec@latest
+tfsec .
+```
+
+### checkov
+
+checkov is a static analysis tool for Terraform files (tf >= v0.12) that prevents cloud misconfigurations at build time. It ships with hundreds of built-in checks spanning AWS, Azure, GCP, and Kubernetes, and supports custom checks written in Python.
+
+```bash
+pip install checkov
+checkov -d ./infra
+```
+
+### terrascan
+
+Terrascan is a collection of security and best practice tests for static code analysis of Terraform templates. It detects misconfigurations and violations of security best practices across cloud providers.
+
+## Docker and containers
+
+These tools analyze Dockerfiles and container images rather than scanning running containers.
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [hadolint](https://github.com/hadolint/hadolint) | GPL-3.0 | Smarter Dockerfile linter; checks against Docker best practices |
+| [Dockle](https://github.com/goodwithtech/dockle) ⚠️ | Apache-2.0 | Container image linter for security and CIS Benchmark compliance |
+| [dive](https://github.com/wagoodman/dive) | MIT | Explores Docker image layers to find wasted space |
+| [kics](https://kics.io/) | Apache-2.0 | Finds security vulnerabilities and misconfigurations in Dockerfiles |
+
+### hadolint
+
+Hadolint is a smarter Dockerfile linter that helps you build best-practice Docker images. It parses the Dockerfile into an AST and applies rules including:
+
+- Using `COPY` instead of `ADD` where possible
+- Pinning package versions in `apt-get install`
+- Avoiding running as root
+- Combining `RUN` instructions to reduce layers
+
+```bash
+# Run hadolint on a Dockerfile
+docker run --rm -i hadolint/hadolint < Dockerfile
+
+# Or install and run locally
+hadolint Dockerfile
+```
+
+## Ansible
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [ansible-lint](https://ansible.readthedocs.io/projects/lint/) | MIT | Checks playbooks for practices that could be improved |
+| [Steampunk Spotter](https://steampunk.si/spotter/) © | Proprietary | Ansible Playbook Scanning Tool with recommendations |
+| [kics](https://kics.io/) | Apache-2.0 | Finds security vulnerabilities and misconfigurations in Ansible |
+
+### ansible-lint
+
+ansible-lint checks Ansible playbooks for practices and behaviors that could potentially be improved. It enforces a set of rules covering task names, module usage, variable naming, and more. It integrates well with CI pipelines and supports custom rules.
+
+```bash
+pip install ansible-lint
+ansible-lint playbook.yml
+```
+
+## CloudFormation
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [cfn-lint](https://github.com/awslabs/cfn-python-lint) | MIT-0 | AWS Labs CloudFormation linter; validates template syntax and resource properties |
+| [cfn_nag](https://github.com/stelligent/cfn_nag) | MIT | Linter for CloudFormation templates; catches insecure configurations |
+| [AWS CloudFormation Guard](https://github.com/aws-cloudformation/cloudformation-guard) | Apache-2.0 | Policy-as-code rules for CloudFormation; can generate rules from templates |
+| [kics](https://kics.io/) | Apache-2.0 | Finds security vulnerabilities and misconfigurations in CloudFormation |
+
+**cfn-lint** is the official AWS Labs CloudFormation linter. It validates template syntax, checks resource properties against AWS CloudFormation resource specifications, and reports errors and warnings.
+
+**cfn_nag** focuses specifically on security — it flags issues like S3 buckets missing encryption, security groups with overly permissive ingress rules, and IAM policies with wildcard actions.
+
+## General config formats
+
+### YAML and JSON
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [yamllint](https://yamllint.readthedocs.io) | GPL-3.0 | Checks YAML files for syntax validity, key repetition, and cosmetic problems |
+| [jsonlint](https://jsonlint.com/) | MIT | JSON parser and validator with a CLI |
+| [Spectral](https://stoplight.io/open-source/spectral) | Apache-2.0 | Flexible JSON/YAML linter with out-of-the-box support for OpenAPI v2/v3 and AsyncAPI v2 |
+
+**yamllint** checks YAML files for syntax validity, key repetition, and cosmetic problems such as line length, trailing spaces, and indentation. It is commonly used to lint Kubernetes manifests, CI configuration files, and Ansible playbooks.
+
+**Spectral** is a flexible JSON/YAML linter with built-in support for OpenAPI and AsyncAPI. You can use it to enforce API design standards and style guides across your OpenAPI specifications.
+
+### CSS, SASS, and SCSS
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [Stylelint](http://stylelint.io) | MIT | Linter for SCSS/CSS files; highly configurable with a large plugin ecosystem |
+| [CSSLint](http://csslint.net) | MIT | Basic syntax checking and finds problematic patterns |
+| [sass-lint](https://github.com/sasstools/sass-lint) ⚠️ | MIT | Node-only Sass linter for both sass and scss syntax |
+
+**Stylelint** is the most actively maintained CSS/SCSS linter. It has over 100 built-in rules and a large plugin ecosystem. You can use it to enforce consistent coding conventions, catch potential errors, and apply stylistic decisions.
+
+### HTML
+
+| Tool | License | Notes |
+|------|---------|-------|
+| [HTMLHint](https://htmlhint.com) | MIT | Static code analysis tool for HTML |
+| [HTML-Validate](https://html-validate.org/) | MIT | Offline HTML5 validator |
+| [Nu Html Checker](https://validator.github.io/validator/) | MIT | Official W3C validator; catches problems in HTML, CSS, and SVG |
+| [HTML Tidy](http://www.html-tidy.org) | MIT | Corrects and cleans up HTML and XML documents |
+
+**HTMLHint** is a static code analysis tool for HTML. It checks for things like undefined attributes, redundant tags, tag nesting errors, and missing alt attributes.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Security & SAST" icon="shield-halved" href="/tools/security-sast">
+    Security-focused SAST tools, secret scanning, and vulnerability scanners
+  </Card>
+  <Card title="Meta-linters" icon="list-check" href="/tools/meta-linters">
+    Run multiple linters including IaC tools in a single pass
+  </Card>
+  <Card title="Tags reference" icon="tag" href="/api/tags-reference">
+    Browse all catalog tags including kubernetes, terraform, dockerfile, and ansible
+  </Card>
+  <Card title="Contributing a tool" icon="plus" href="/contributing/adding-a-tool">
+    Add an infrastructure tool to the catalog
+  </Card>
+</CardGroup>

@@ -1,0 +1,126 @@
+---
+title: 'Popular languages'
+description: 'Static analysis tools for the most widely used programming languages: Python, JavaScript, TypeScript, Go, Java, Kotlin, Swift, and Rust.'
+---
+
+This page covers the most widely used programming languages and the static analysis tools available for each one. For each language you will find a breakdown of linters, formatters, type checkers, and security scanners — along with their license and primary function.
+
+<Note>
+  Proprietary tools are marked with ©. Tools that are no longer actively maintained or have been archived are marked with ⚠️.
+</Note>
+
+## Python
+
+Python has one of the richest ecosystems of static analysis tools. The community has converged around a set of well-maintained tools that cover linting, type checking, security scanning, and code formatting.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [pylint](https://pylint.pycqa.org) | Looks for programming errors, enforces a coding standard, and sniffs for code smells. Includes `pyreverse` (UML diagram generator) and `symilar` (similarities checker). | GPL-2.0 | Linter |
+| [mypy](http://www.mypy-lang.org) | A static type checker that aims to combine the benefits of duck typing and static typing. Frequently used with MonkeyType to automatically infer types from runtime behavior. | Other | Type checker |
+| [ruff](https://astral.sh/ruff) | Fast Python linter written in Rust. 10–100x faster than existing linters, compatible with Python 3.10+, and supports a file watcher for continuous feedback. | MIT | Linter |
+| [flake8](https://github.com/PyCQA/flake8) | A wrapper around `pyflakes`, `pycodestyle`, and `mccabe`. Widely used as a baseline linter with a large plugin ecosystem. | MIT | Linter |
+| [Black](https://black.readthedocs.io/en/stable) | The uncompromising Python code formatter. Produces a consistent style with no configuration required. | MIT | Formatter |
+| [pyright](https://github.com/Microsoft/pyright) | Static type checker for Python created by Microsoft to address gaps in existing tools like mypy. Powers Pylance in VS Code. | MIT | Type checker |
+| [bandit](https://bandit.readthedocs.io/en/latest) | A tool to find common security issues in Python code. Scans for patterns like hardcoded passwords, use of insecure functions, and SQL injection risks. | Apache-2.0 | SAST |
+
+<Tip>
+  For new Python projects, consider using **ruff** as your primary linter (it replaces flake8, isort, and many pycodestyle checks) alongside **mypy** or **pyright** for type checking.
+</Tip>
+
+## JavaScript
+
+JavaScript tooling is dominated by ESLint, which has an extensive plugin ecosystem covering everything from React to accessibility and security.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [ESLint](https://github.com/eslint/eslint) | An extensible linter for JS, following the ECMAScript standard. The most widely adopted JavaScript linter, with thousands of plugins and shareable configs. | MIT | Linter |
+| [standard](http://standardjs.com) | An npm module that checks for JavaScript styleguide issues. Opinionated with no configuration required. | MIT | Linter |
+| [flow](https://flow.org) | A static type checker for JavaScript. Checks code for type errors incrementally without requiring a full TypeScript migration. | MIT | Type checker |
+| [retire.js](https://retirejs.github.io/retire.js) | Scanner detecting the use of JavaScript libraries with known vulnerabilities. | Apache-2.0 | SAST |
+
+## TypeScript
+
+TypeScript has its own set of static analysis tools that build on the TypeScript compiler's type information.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [TypeScript ESLint](https://github.com/typescript-eslint/typescript-eslint) | TypeScript language extension for ESLint. Provides TypeScript-specific lint rules and enables ESLint to parse TypeScript files using type information. | Other | Linter |
+| [fta](https://ftaproject.dev) | Rust-based static analysis for TypeScript projects. Provides maintainability scoring and complexity metrics. | MIT | Analyzer |
+| [zod](https://zod.dev) | TypeScript-first schema validation with static type inference. Eliminates duplicative type declarations by inferring types from validators. | MIT | Validator |
+
+<Info>
+  tslint was deprecated in 2019. If you are still using it, migrate to `typescript-eslint`, which is now the recommended approach for TypeScript linting.
+</Info>
+
+## Go
+
+Go ships with built-in tooling (`go vet`, `gofmt`) and has a mature ecosystem of third-party analyzers.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [GolangCI-Lint](https://golangci-lint.run) | A linters aggregator for Go. Runs many linters concurrently and normalizes their output. The recommended replacement for the deprecated Go Meta Linter. | GPL-3.0 | Meta-linter |
+| [staticcheck](https://staticcheck.io) | Go static analysis that specializes in finding bugs, simplifying code, and improving performance. | Other | Linter |
+| [govulncheck](https://go.dev/blog/vuln) | Reports known vulnerabilities that affect Go code. Uses static analysis of source code or a binary's symbol table to narrow down reports to only those that could affect the application. | BSD-3-Clause | SAST |
+| [go vet](https://golang.org/cmd/vet) | Built-in tool that examines Go source code and reports suspicious constructs. Bundled with the Go toolchain. | BSD-3-Clause | Linter |
+| [revive](https://revive.run) | Fast, configurable, extensible, flexible linter for Go. A drop-in replacement for the unmaintained `golint`. | MIT | Linter |
+| [gosec](https://securego.io) | Inspects source code for security problems by scanning the Go AST. | Apache-2.0 | SAST |
+
+## Java
+
+Java has a long history of static analysis tooling, ranging from style checkers to formal verification tools. Many are deeply integrated into build systems like Maven and Gradle.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [checkstyle](https://checkstyle.org) | Checks Java source code for adherence to a coding standard or set of validation rules (best practices). Highly configurable with support for Google and Sun style guides. | LGPL-2.1 | Linter |
+| [SpotBugs](https://spotbugs.github.io) | SpotBugs is FindBugs' successor. A tool for static analysis to look for bugs in Java code by examining bytecode. | LGPL-2.1 | Bug finder |
+| [PMD](https://pmd.github.io) | Finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation, and more. | Apache-2.0 | Linter |
+| [Error Prone](https://errorprone.info) | Catches common Java mistakes as compile-time errors. A Google open-source project that plugs into the Java compiler. | Apache-2.0 | Linter |
+| [NullAway](https://github.com/uber/NullAway) | Type-based null-pointer checker with low build-time overhead. An Error Prone plugin developed by Uber. | MIT | Type checker |
+| [Checker Framework](https://checkerframework.org) | Pluggable type-checking for Java. Provides guarantees of correctness via 27 pre-built type systems. Users can also define their own type systems. | GPL-2.0 | Type checker |
+
+## Kotlin
+
+Kotlin benefits from Java tooling and has its own dedicated tools focused on idiomatic Kotlin style.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [ktlint](https://ktlint.github.io) | An anti-bikeshedding Kotlin linter with built-in formatter. Enforces the official Kotlin coding conventions with no configuration needed. | MIT | Linter / Formatter |
+| [detekt](https://detekt.github.io/detekt) | Static code analysis for Kotlin code. Provides a wide range of checks including complexity, style, and correctness rules. Highly configurable. | Apache-2.0 | Linter |
+
+## Swift
+
+Swift static analysis tooling is tightly scoped to Apple's ecosystem and focuses on style enforcement and formatting.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [SwiftLint](https://realm.github.io/SwiftLint) | A tool to enforce Swift style and conventions. Integrates with Xcode and provides both warnings and errors during the build. | MIT | Linter |
+| [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) | A library and command-line formatting tool for reformatting Swift code. Can be run as a build phase or as a pre-commit hook. | MIT | Formatter |
+
+## Rust
+
+Rust ships with excellent built-in tooling, and the cargo ecosystem provides additional security and correctness tools.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [clippy](https://rust-lang.github.io/rust-clippy) | A code linter to catch common mistakes and improve your Rust code. Ships with the Rust toolchain via `rustup`. | Apache-2.0 / MIT | Linter |
+| [rustfmt](https://github.com/rust-lang/rustfmt) | A tool for formatting Rust code according to style guidelines. The official Rust formatter, also bundled with `rustup`. | Apache-2.0 / MIT | Formatter |
+| [cargo-audit](https://rustsec.org) | Audits `Cargo.lock` for crates with security vulnerabilities reported to the RustSec Advisory Database. | Apache-2.0 / MIT | SAST |
+| [cargo-deny](https://embarkstudios.github.io/cargo-deny) | A cargo plugin for linting your dependencies. Checks for valid license information, duplicate crates, security vulnerabilities, and more. | Apache-2.0 | Linter |
+| [rust-analyzer](https://rust-analyzer.github.io) | Supports functionality such as go-to-definition, type inference, symbol search, reformatting, and code completion. The de-facto Rust language server. | Apache-2.0 / MIT | LSP |
+
+---
+
+<CardGroup cols={2}>
+  <Card title="Systems languages" icon="microchip" href="/tools/systems-languages">
+    Tools for C, C++, Rust, Ada, Fortran, and Assembly.
+  </Card>
+  <Card title="Scripting languages" icon="terminal" href="/tools/scripting-languages">
+    Tools for Python, Ruby, PHP, Perl, Shell, and Lua.
+  </Card>
+  <Card title="Functional languages" icon="function" href="/tools/functional-languages">
+    Tools for Haskell, Elixir, Erlang, F#, Clojure, and Elm.
+  </Card>
+  <Card title="Other languages" icon="code" href="/tools/other-languages">
+    Tools for Kotlin, Scala, Dart, Groovy, SQL, Verilog, and more.
+  </Card>
+</CardGroup>

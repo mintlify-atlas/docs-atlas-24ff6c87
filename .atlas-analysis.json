@@ -1,0 +1,102 @@
+{
+  "projectType": "general",
+  "projectName": "Analysis Tools",
+  "projectDescription": "A curated catalog of static analysis tools, linters, and formatters for all programming languages, config files, and build tools — focused on improving code quality.",
+  "theme": "palm",
+  "primaryColor": "#184775",
+  "lightColor": "#84a4b9",
+  "darkColor": "#ccd7e1",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guide",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "how-it-works",
+              "faq"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/overview",
+              "contributing/adding-a-tool",
+              "contributing/tool-format",
+              "contributing/tags"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Tools",
+        "groups": [
+          {
+            "group": "By Language",
+            "pages": [
+              "tools/popular-languages",
+              "tools/systems-languages",
+              "tools/scripting-languages",
+              "tools/functional-languages",
+              "tools/other-languages"
+            ]
+          },
+          {
+            "group": "Multi-Language & Meta",
+            "pages": [
+              "tools/multi-language",
+              "tools/security-sast",
+              "tools/infrastructure-config",
+              "tools/meta-linters"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Data & API",
+        "groups": [
+          {
+            "group": "Data Format",
+            "pages": [
+              "api/overview",
+              "api/tool-schema",
+              "api/tags-reference"
+            ]
+          },
+          {
+            "group": "Renderer",
+            "pages": [
+              "api/renderer",
+              "api/local-development"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "750+ curated static analysis tools across all major programming languages",
+    "Machine-readable JSON API for all tool data",
+    "Rust-based renderer that generates README and JSON from YAML sources",
+    "Rich tool metadata: license, categories, tags, types, deprecation status",
+    "Coverage of linters, formatters, SAST tools, and meta-linters",
+    "Community-driven with clear contribution guidelines",
+    "Supports languages from C/C++ to Python, Go, Rust, Java, JavaScript and more",
+    "Categorized by language, framework, config format, and security focus"
+  ],
+  "publicApiSurface": [
+    "data/tools/*.yml — YAML source files for each tool entry",
+    "data/tags.yml — canonical tag definitions (language/other types)",
+    "data/api/tools.json — machine-readable JSON of all tools",
+    "data/api/tags.json — machine-readable JSON of all tags",
+    "data/api/stats/ — statistics JSON files",
+    "make render — generates README.md and JSON API from YAML sources",
+    "make render-skip-deprecated — renders without deprecated tools",
+    "ParsedEntry fields: name, categories, tags, license, types, homepage, source, description, deprecated",
+    "ApiEntry fields: name, categories, languages, other, licenses, types, homepage, source, description",
+    "Category enum: linter, formatter, performance, meta",
+    "ToolType enum: cli, gui, service, ide-plugin"
+  ]
+}

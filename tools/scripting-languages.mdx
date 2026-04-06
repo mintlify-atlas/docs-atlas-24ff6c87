@@ -1,0 +1,146 @@
+---
+title: 'Scripting languages'
+description: 'Static analysis tools for scripting languages including Python, Ruby, PHP, Perl, Shell, and Lua.'
+---
+
+Scripting languages are used for web backends, automation, system administration, and data processing. Static analysis is especially valuable here because many of these languages are dynamically typed and errors only surface at runtime by default.
+
+<Note>
+  Proprietary tools are marked with ©. Tools that are no longer actively maintained or have been archived are marked with ⚠️.
+</Note>
+
+## Python
+
+Python has one of the largest and most active static analysis ecosystems of any scripting language. Tools cover linting, type checking, security analysis, dead code detection, and complexity measurement.
+
+### Linters and formatters
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [pylint](https://pylint.pycqa.org) | Looks for programming errors, helps enforce a coding standard, and sniffs for code smells. Includes `pyreverse` (UML diagram generator) and `symilar` (similarities checker). | GPL-2.0 | Linter |
+| [ruff](https://astral.sh/ruff) | Fast Python linter written in Rust. 10–100x faster than existing linters. Compatible with Python 3.10+. Supports a file watcher. | MIT | Linter |
+| [flake8](https://github.com/PyCQA/flake8) | A wrapper around `pyflakes`, `pycodestyle`, and `mccabe`. The classic Python linting baseline with a large plugin ecosystem. | MIT | Linter |
+| [Black](https://black.readthedocs.io/en/stable) | The uncompromising Python code formatter. Enforces a consistent style with minimal configuration. | MIT | Formatter |
+| [autoflake](https://github.com/PyCQA/autoflake) | Removes unused imports and unused variables from Python code. Can be run as a pre-commit hook or standalone CLI. | MIT | Formatter |
+| [pycodestyle](https://pycodestyle.pycqa.org/en/latest) | Checks Python code against the style conventions in PEP 8. Formerly known as `pep8`. | MIT | Linter |
+| [pyflakes](https://pypi.org/project/pyflakes) | Checks Python source files for errors. Fast and simple, with no style checks. | MIT | Linter |
+| [fixit](https://pypi.org/project/fixit) | A framework for creating lint rules and corresponding auto-fixes for source code. Developed at Meta. | MIT | Linter |
+
+### Type checkers
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [mypy](http://www.mypy-lang.org) | A static type checker that combines the benefits of duck typing and static typing. Frequently used with MonkeyType to infer types from runtime behavior. | Other | Type checker |
+| [pyright](https://github.com/Microsoft/pyright) | Static type checker for Python created by Microsoft to address gaps in existing tools like mypy. Powers Pylance in VS Code. | MIT | Type checker |
+| [pyrefly](https://pyrefly.org) | A fast, incremental type checker and language server for Python, providing IDE features like code navigation and semantic highlighting. | MIT | Type checker |
+| [pytype](https://google.github.io/pytype) | A static type analyzer for Python code developed by Google. Infers types and checks for type errors. | Apache-2.0 | Type checker |
+| [pyanalyze](https://pyanalyze.readthedocs.io/en/latest) | Detects common mistakes in Python code such as undefined variable references and type errors. Can be extended with additional rules. | Apache-2.0 | Type checker |
+
+### Security tools
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [bandit](https://bandit.readthedocs.io/en/latest) | Finds common security issues in Python code. Scans for patterns like hardcoded passwords and use of insecure functions. | Apache-2.0 | SAST |
+| [Pysa](https://pyre-check.org/docs/pysa-basics.html) | Based on Facebook's pyre-check. Identifies potential security issues via taint analysis. | MIT | SAST |
+| [pip-audit](https://github.com/pypa/pip-audit) | Scans Python packages for known vulnerabilities. Developed by the Python Packaging Authority (PyPA). Supports GitHub Actions and multiple vulnerability service integrations. | Apache-2.0 | SAST |
+| [Dlint](https://github.com/dlint-py/dlint) | A tool for ensuring Python code is secure. Provides flake8 plugin-style checks for insecure coding patterns. | BSD-3-Clause | SAST |
+| [Dodgy](https://github.com/landscapeio/dodgy) | Searches code for "dodgy" looking values — hardcoded secrets, SCM diff markers, and similar patterns. | MIT | SAST |
+
+### Code quality and metrics
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [vulture](https://github.com/jendrikseipp/vulture) | Finds unused classes, functions, and variables in Python code. Useful for identifying dead code in large codebases. | MIT | Dead code |
+| [refurb](https://github.com/dosisod/refurb) | A tool for refurbishing and modernizing Python codebases. Heavily inspired by Rust's clippy. | MIT | Linter |
+| [pyupgrade](https://pypi.org/project/pyupgrade-docs) | Automatically upgrades syntax for newer versions of the Python language. Can be used as a pre-commit hook. | MIT | Formatter |
+| [unimport](https://unimport.hakancelik.dev) | A linter and formatter for finding and removing unused import statements. | MIT | Formatter |
+| [wemake-python-styleguide](https://wemake-python-styleguide.rtfd.io) | The strictest and most opinionated Python linter. Enforces a very large set of style and correctness rules. | MIT | Linter |
+| [prospector](https://github.com/PyCQA/prospector) | A wrapper around `pylint`, `pep8`, `mccabe`, and others. Provides a unified interface for multiple tools. | GPL-2.0 | Meta-linter |
+
+<Tip>
+  For new Python projects, **ruff** is the recommended starting point because it replaces flake8, isort, and many pycodestyle checks in a single fast binary. Pair it with **mypy** or **pyright** for type checking and **bandit** for security scanning.
+</Tip>
+
+## Ruby
+
+Ruby has a mature set of tools focused on style, complexity, and security — especially for Rails applications.
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [RuboCop](https://docs.rubocop.org/rubocop) | A Ruby static code analyzer based on the community Ruby style guide. The most widely used Ruby linter, with extensive cop configuration and plugin support. | MIT | Linter |
+| [reek](https://github.com/troessner/reek) | Code smell detector for Ruby. Detects issues like long parameter lists, feature envy, and too-many-instance-variables. | MIT | Linter |
+| [flog](https://ruby.sadi.st/Flog.html) | Reports the most tortured code in an easy-to-read pain report. Higher scores indicate more complex, painful code. | MIT | Metrics |
+| [Fasterer](https://github.com/DamirSvrtan/fasterer) | Checks for common Ruby idioms that could be made faster. Identifies slow patterns and suggests improvements. | MIT | Linter |
+| [brakeman](https://brakemanscanner.org) | A static analysis security vulnerability scanner for Ruby on Rails applications. Finds SQL injection, XSS, CSRF, and other web vulnerabilities. | MIT | SAST |
+| [rails_best_practices](https://rails-bestpractices.com) | A code metric tool for Rails projects. Identifies violations of Rails best practices and anti-patterns. | MIT | Linter |
+| [rubycritic](https://github.com/whitesmith/rubycritic) | A Ruby code quality reporter that wraps around `reek`, `flog`, and `flay` to produce a quality report. | MIT | Metrics |
+| [Sorbet](https://sorbet.org) | A fast, powerful type checker designed for Ruby. Provides gradual typing through type annotations. | Apache-2.0 | Type checker |
+| [Steep](https://github.com/soutaro/steep) | Gradual typing for Ruby using RBS type signatures. | MIT | Type checker |
+| [Standard Ruby](https://github.com/testdouble/standard) | Ruby style guide with linter and automatic code fixer. Built on RuboCop with a fixed, unconfigurable set of rules. | MIT | Linter |
+| [dawnscanner](https://github.com/thesp0nge/dawnscanner) | A static analysis security scanner for Ruby web applications. Supports Sinatra, Padrino, and Ruby on Rails. | MIT | SAST |
+
+## PHP
+
+PHP has a rich ecosystem of static analysis tools, with PHPStan and Psalm being the current community favorites for type-level analysis.
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [PHPStan](https://phpstan.org) | PHP Static Analysis Tool — discovers bugs in your code without running it. Supports PHPDoc types and generics. | MIT | Type checker |
+| [Psalm](https://psalm.dev) | Static analysis tool for finding type errors in PHP applications. Feature-rich with strong IDE integration. | MIT | Type checker |
+| [phan](https://github.com/phan/phan/wiki) | A modern static analyzer from Etsy. Performs type checking and detects potential bugs. | Apache-2.0 | Type checker |
+| [PHP Coding Standards Fixer](https://cs.symfony.com) | Fixes your code according to standards like PSR-1, PSR-2, and the Symfony standard. | MIT | Formatter |
+| [PHPMD](https://phpmd.org) | PHP Mess Detector. Finds possible bugs and suboptimal code, including unused code and overcomplicated expressions. | BSD-3-Clause | Linter |
+| [mago](https://mago.carthage.software) | A complete toolchain for PHP written in Rust. Provides a blazing-fast formatter, an intelligent linter, a static analyzer, and an architectural guard enforcing dependency rules. | MIT | Multi-tool |
+| [larastan](https://github.com/larastan/larastan) | Adds static analysis to Laravel, improving developer productivity and code quality. A wrapper around PHPStan with Laravel-specific rules. | MIT | Type checker |
+| [deptrac](https://github.com/sensiolabs-de/deptrac) | Enforces rules for dependencies between software layers. Useful for maintaining architectural boundaries in larger applications. | MIT | Analyzer |
+| [PHP Architecture Tester](https://github.com/carlosas/phpat) | Easy-to-use architecture testing tool for PHP. Lets you write architecture rules as PHP code and verify them automatically. | MIT | Analyzer |
+| [rector](https://getrector.org) | Instant upgrades and automated refactoring of PHP 5.3+ code. Upgrades your code for PHP 7.4, 8.0, and beyond. | MIT | Refactoring |
+| [exakat](https://www.exakat.io) | An automated code reviewing engine for PHP. | AGPL-3.0 | Linter |
+| [phploc](https://github.com/sebastianbergmann/phploc) | Quickly measures the size and analyzes the structure of a PHP project. | BSD-3-Clause | Metrics |
+| [composer-dependency-analyser](https://github.com/shipmonk-rnd/composer-dependency-analyser) | Fast detection of composer dependency issues. Detects unused, shadow, and misplaced composer dependencies. | MIT | Analyzer |
+
+## Perl
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [Perl::Critic](https://metacpan.org/pod/Perl::Critic) | Critiques Perl source code for best practices. Based on the guidelines in Damian Conway's book *Perl Best Practices*. | GPL-1.0 | Linter |
+| [perltidy](https://perltidy.sourceforge.net) | A Perl script that indents and reformats Perl scripts to make them easier to read. Follows the Perl Style Guide by default. | GPL-2.0 | Formatter |
+| [Perl::Analyzer](https://technix.github.io/Perl-Analyzer) | Analyzes and visualizes Perl codebases, providing information about namespaces, dependencies, inheritance, and method calls. | MIT | Analyzer |
+| [zarn](https://github.com/htrgouvea/zarn) | A lightweight static security analysis tool for modern Perl applications. | MIT | SAST |
+
+## Shell
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [shellcheck](https://www.shellcheck.net) | Gives warnings and suggestions for bash/sh shell scripts. The most widely used shell script linter, covering a comprehensive set of correctness and portability issues. | GPL-3.0 | Linter |
+| [bashate](https://github.com/openstack/bashate) | Code style enforcement for bash programs. Output format follows pycodestyle (PEP 8) conventions. Originally developed for OpenStack. | Apache-2.0 | Linter |
+| [sh (mvdan)](https://pkg.go.dev/mvdan.cc/sh/v3) | A shell parser, formatter, and interpreter with bash support. Includes `shfmt` for consistent shell script formatting. | BSD-3-Clause | Formatter |
+| [shellharden](https://github.com/anordal/shellharden) | A syntax highlighter and tool to semi-automate rewriting of scripts to ShellCheck conformance. Focused on quoting and safe variable expansion. | ISC | Linter |
+
+<Tip>
+  **shellcheck** is the essential starting point for any shell script analysis. It catches a very broad range of common mistakes. Pair it with **shfmt** (from the `sh` package) for automatic formatting.
+</Tip>
+
+## Lua
+
+| Tool | Description | License | Category |
+|------|-------------|---------|----------|
+| [luacheck](https://github.com/lunarmodules/luacheck) | A tool for linting and static analysis of Lua code. Detects various problems including unused variables, shadowed upvalues, and access to undefined global variables. | MIT | Linter |
+| [lualint](https://github.com/philips/lualint) | Performs `luac`-based static analysis of global variable usage in Lua source code. | MIT | Linter |
+
+---
+
+<CardGroup cols={2}>
+  <Card title="Popular languages" icon="star" href="/tools/popular-languages">
+    Tools for Python, JavaScript, TypeScript, Go, Java, Swift, and Rust.
+  </Card>
+  <Card title="Systems languages" icon="microchip" href="/tools/systems-languages">
+    Tools for C, C++, Rust, Ada, Fortran, and Assembly.
+  </Card>
+  <Card title="Security / SAST" icon="shield" href="/tools/security-sast">
+    Security-focused static analysis tools across all languages.
+  </Card>
+  <Card title="Multi-language tools" icon="layer-group" href="/tools/multi-language">
+    Tools that analyze code across multiple languages at once.
+  </Card>
+</CardGroup>

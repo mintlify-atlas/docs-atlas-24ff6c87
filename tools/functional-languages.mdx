@@ -1,0 +1,115 @@
+---
+title: 'Functional languages'
+description: 'Static analysis tools for functional programming languages including Haskell, Elixir, Erlang, F#, Clojure, and Elm.'
+---
+
+Functional languages — particularly those in the ML family and Erlang/OTP ecosystem — place a high value on correctness by construction. Type systems in languages like Haskell, Elm, and F# catch entire classes of bugs at compile time. Static analysis tools in this space extend that guarantees further, finding dead code, stylistic issues, security vulnerabilities, and more.
+
+<Note>
+  Proprietary tools are marked with ©. Tools that are no longer actively maintained or have been archived are marked with ⚠️.
+</Note>
+
+## Haskell
+
+Haskell's strong type system eliminates many bugs by default. The tools below extend that safety net by finding code improvements, dead exports, and verifying refinement types.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [HLint](https://github.com/ndmitchell/hlint) | Suggests possible improvements to Haskell code. Offers a large set of hints covering idiomatic style, redundant constructs, and simplifications. One of the most widely used Haskell analysis tools. | BSD-3-Clause | Linter |
+| [Stan](https://kowainik.github.io/projects/stan) | A command-line tool for analyzing Haskell projects and reporting discovered vulnerabilities in a helpful way with possible solutions. Designed to be an alternative to HLint with a focus on correctness issues. | MPL-2.0 | Analyzer |
+| [Liquid Haskell](https://ucsd-progsys.github.io/liquidhaskell-blog) | A refinement type checker for Haskell programs. Lets you add logical predicates to type signatures to prove program properties beyond what the standard type system can express. | BSD-3-Clause | Formal verifier |
+| [Weeder](https://github.com/ocharles/weeder) | Detects dead exports and unused package imports in Haskell code. Helps keep codebases lean by identifying code that is defined but never used outside its module. | BSD-3-Clause | Dead code |
+
+### Unmaintained Haskell tools
+
+| Tool | Description |
+|------|-------------|
+| **brittany** ⚠️ | Haskell source code formatter. |
+
+<Tip>
+  Start with **HLint** for day-to-day Haskell linting. Add **Weeder** in CI to catch unused exports that accumulate over time. If you need formal guarantees beyond the type system, **Liquid Haskell** provides refinement types.
+</Tip>
+
+## Elixir
+
+Elixir runs on the Erlang VM and benefits from Erlang's built-in Dialyzer for type analysis. The community has built additional tools on top of OTP's infrastructure.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [credo](https://github.com/rrrene/credo) | A static code analysis tool with a focus on code consistency and teaching. Enforces a consistent style and helps developers learn idiomatic Elixir. Highly configurable and widely adopted in the Elixir community. | MIT | Linter |
+| [dialyxir](https://github.com/jeremyjh/dialyxir) | Mix tasks to simplify the use of Dialyzer in Elixir projects. Makes it straightforward to run the Erlang Dialyzer from a standard Mix workflow. | Apache-2.0 | Type checker |
+| [sobelow](https://github.com/nccgroup/sobelow) | Security-focused static analysis for the Phoenix Framework. Detects common vulnerabilities including SQL injection, XSS, and unsafe file operations. Developed by NCC Group. | Apache-2.0 | SAST |
+
+<Info>
+  **dialyxir** wraps the Erlang Dialyzer (see the Erlang section below). It provides the same type discrepancy analysis but with a much more developer-friendly Mix integration for Elixir projects.
+</Info>
+
+## Erlang
+
+Erlang ships with Dialyzer as part of its standard distribution — one of the most powerful type analysis tools available in any language. It operates on compiled BEAM bytecode as well as source code.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [dialyzer](https://www.erlang.org/doc/man/dialyzer.html) | The DIALYZER, a DIscrepancy AnaLYZer for ERlang programs. Identifies software discrepancies such as definite type errors, dead or unreachable code, and unnecessary tests. Bases its analysis on success typings, which allows for sound warnings (no false positives). Can analyze both debug-compiled BEAM bytecode and Erlang source code. | Apache-2.0 | Type checker |
+| [elvis](https://github.com/inaka/elvis) | Erlang Style Reviewer. Checks Erlang code for style and coding standard violations. | Apache-2.0 | Linter |
+
+### Unmaintained Erlang tools
+
+| Tool | Description |
+|------|-------------|
+| **Primitive Erlang Security Tool (PEST)** ⚠️ | A basic scanner for Erlang source code that reports function calls that may cause security issues. |
+
+## F#
+
+F# is a functional-first language in the .NET ecosystem. Its tools integrate with the broader .NET toolchain and IDE infrastructure.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [fantomas](https://fsprojects.github.io/fantomas) | F# source code formatter. The de-facto standard formatter for F#, used by the majority of F# projects. Integrated with `dotnet format` and various editor plugins. | Apache-2.0 | Formatter |
+| [FSharpLint](https://github.com/fsprojects/FSharpLint) | Lint tool for F#. Checks F# source code for a variety of style and correctness issues. Configurable via JSON or XML. | MIT | Linter |
+| [ionide-analyzers](https://ionide.io/ionide-analyzers) | A collection of F# analyzers built with the FSharp.Analyzers.SDK. Provides additional diagnostics beyond the compiler warnings. Integrates with the Ionide VS Code extension. | MIT | Analyzer |
+
+## Clojure
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [clj-kondo](https://github.com/borkdude/clj-kondo) | A linter for Clojure code that informs you about potential errors while you are typing. Extremely fast, with native binaries available via GraalVM. Supports Clojure, ClojureScript, and EDN. Integrates with most major editors through LSP. | EPL-1.0 | Linter |
+
+<Tip>
+  **clj-kondo** is the community-standard Clojure linter. It ships as a native binary and integrates with virtually every Clojure-aware editor and CI system.
+</Tip>
+
+## Elm
+
+Elm is a functional language for building web applications. Its compiler already produces famously helpful error messages; the tools below extend that further.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [elm-review](https://package.elm-lang.org/packages/jfmengels/elm-review/latest) | Analyzes whole Elm projects with a focus on shareable and custom rules written in Elm. Adds guarantees that the Elm compiler does not give you, such as detecting unused code, enforcing naming conventions, and more. Rules are written in Elm itself, making them type-safe. | BSD-3-Clause | Linter |
+
+### Unmaintained Elm tools
+
+| Tool | Description |
+|------|-------------|
+| **elm-analyse** ⚠️ | A tool that analyzes Elm code, identifies deficiencies, and applies best practices. Superseded by elm-review. |
+
+<Info>
+  **elm-review** supersedes **elm-analyse**. It has a much richer rule ecosystem and is actively maintained. If you are still using elm-analyse, migrate to elm-review.
+</Info>
+
+---
+
+<CardGroup cols={2}>
+  <Card title="Popular languages" icon="star" href="/tools/popular-languages">
+    Tools for Python, JavaScript, TypeScript, Go, Java, Swift, and Rust.
+  </Card>
+  <Card title="Other languages" icon="code" href="/tools/other-languages">
+    Tools for Kotlin, Scala, Dart, Groovy, SQL, Verilog, and more.
+  </Card>
+  <Card title="Systems languages" icon="microchip" href="/tools/systems-languages">
+    Tools for C, C++, Rust, Ada, Fortran, and Assembly.
+  </Card>
+  <Card title="Multi-language tools" icon="layer-group" href="/tools/multi-language">
+    Tools that analyze code across multiple languages at once.
+  </Card>
+</CardGroup>

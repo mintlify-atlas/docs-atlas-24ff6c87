@@ -1,0 +1,211 @@
+---
+title: "Meta-linters"
+description: "Tools that aggregate or orchestrate multiple linters — run many analyzers in one command, unify their output, and manage linting across every language in your repo."
+---
+
+A meta-linter is a tool that runs multiple linters together and presents their output in a unified way. Instead of configuring and running ten individual tools, you configure the meta-linter once and it handles the rest.
+
+## Why use a meta-linter?
+
+When a codebase spans several languages — say, a TypeScript frontend, a Python backend, a Dockerfile, and Terraform modules — you need different linters for each. Without a meta-linter, you end up with:
+
+- Multiple separate tools to install and update
+- Inconsistent output formats across tools
+- Different CI integration steps for each linter
+- No single pass to catch everything
+
+A meta-linter solves these problems by acting as a single entry point that installs, configures, and runs all the linters your project needs.
+
+<Tip>
+  If your project uses a single language, you probably do not need a meta-linter. Start with the dedicated linter for that language. Meta-linters pay off once you have three or more languages or tool types in one repo.
+</Tip>
+
+<Note>
+  The symbol © marks proprietary tools. ⚠️ means the tool has not been updated in over a year or the repository was archived.
+</Note>
+
+## Overview
+
+| Tool | License | Approach |
+|------|---------|---------|
+| [Mega-Linter](https://megalinter.io/) | MIT | Docker-based; runs 100+ linters for all languages in CI |
+| [Super-Linter](https://github.com/github/super-linter) ⚠️ | MIT | GitHub Action combining multiple linters |
+| [trunk](https://trunk.io) © | Proprietary | Manages and runs multiple linters locally with caching |
+| [reviewdog](https://github.com/haya14busa/reviewdog) | MIT | Posts linter results as PR review comments on any code host |
+| [pre-commit](https://pre-commit.com) | MIT | Git hook framework for running linters before every commit |
+| [coala](https://github.com/coala/coala) ⚠️ | AGPL-3.0 | Language-independent framework; 60+ languages by default |
+| [Pronto](https://github.com/prontolabs/pronto) | MIT | Runs various code analysis tools and comments on pull requests |
+| [golangci-lint](https://golangci-lint.run) | GPL-3.0 | Meta-linter for Go — aggregates many Go linters |
+| [prospector](https://github.com/PyCQA/prospector) | GPL-2.0 | Python meta-linter combining pylint, pyflakes, mccabe, and others |
+
+## Mega-Linter
+
+Mega-Linter can handle any type of project thanks to its 70+ embedded linters, its advanced reporting, and its ability to run on any CI system or locally. It supports assisted installation and configuration, and can apply formatting and auto-fixes.
+
+Mega-Linter covers a remarkable breadth of languages and formats: Ansible, Apex, ARM, C, C++, C#, Clojure, CloudFormation, CoffeeScript, CSS, Dart, Dockerfile, Go, Groovy, HTML, Java, JavaScript, JSON, Kotlin, Kubernetes, Lua, Markdown, PHP, Python, R, Ruby, Rust, Scala, Shell, SQL, Terraform, TypeScript, Vue, YAML, and more.
+
+```yaml
+# .github/workflows/mega-linter.yml
+name: Mega-Linter
+on: [push, pull_request]
+jobs:
+  mega-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mega-Linter
+        uses: oxsecurity/megalinter@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Mega-Linter produces a detailed report showing every linter result and integrates with GitHub status checks, GitLab pipelines, and Azure DevOps.
+
+## Super-Linter ⚠️
+
+Super-Linter is a GitHub-maintained combination of multiple linters to install as a GitHub Action. It bundles linters for CoffeeScript, Go, JavaScript, JSON, Markdown, Perl, Python, Ruby, Shell, TypeScript, XML, and YAML.
+
+```yaml
+# .github/workflows/super-linter.yml
+name: Super-Linter
+on: [push, pull_request]
+jobs:
+  super-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint code base
+        uses: super-linter/super-linter@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+<Warning>
+  Super-Linter has not been updated in over a year. Consider Mega-Linter as a more actively maintained alternative for new projects.
+</Warning>
+
+## trunk ©
+
+trunk manages and runs multiple linters locally with caching so you only run linters on changed files. It supports 30+ linters and counting, making it simple to identify, install, configure, and run the right linters, static analyzers, and formatters for all your repos.
+
+trunk is proprietary but has a free tier. It is especially useful for local developer workflows where you want fast, incremental linting without running everything on every file.
+
+## reviewdog
+
+reviewdog posts review comments from any linter in any code hosting service. It takes linter output (in a variety of formats) and converts it to inline review comments on GitHub, GitLab, Bitbucket, or other hosts.
+
+reviewdog is not a linter itself — it is a bridge between linters and code review. You run your linters and pipe their output to reviewdog, which formats the results and posts them as pull request comments.
+
+```bash
+# Run golint and post results as PR comments
+golint ./... | reviewdog -f=golint -reporter=github-pr-review
+```
+
+This workflow means you can use *any* linter — even custom scripts — and get inline code review feedback automatically.
+
+## pre-commit
+
+pre-commit is a framework for managing and maintaining multi-language pre-commit hooks. You define which hooks to run in a `.pre-commit-config.yaml` file, and pre-commit installs and runs them automatically before every `git commit`.
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.0
+    hooks:
+      - id: flake8
+```
+
+```bash
+# Install pre-commit and set up the hooks
+pip install pre-commit
+pre-commit install
+
+# Run all hooks against all files (useful in CI)
+pre-commit run --all-files
+```
+
+pre-commit is language-agnostic. Hooks are available for Python, JavaScript, Go, Rust, Ruby, Shell, Terraform, and many more.
+
+## coala ⚠️
+
+coala is a language-independent framework for creating code analysis that supports over 60 languages by default through a plugin system. It provides a unified interface for all linters and analysis tools.
+
+<Warning>
+  coala has not been actively maintained for several years. For new projects, prefer Mega-Linter, pre-commit, or reviewdog.
+</Warning>
+
+## Pronto
+
+Pronto is a tool for quick automated code review of your changes. It supports more than 40 runners for various languages, including Clang, Elixir, JavaScript, PHP, Ruby, and more. Like reviewdog, it focuses on commenting on pull requests with linter output.
+
+## Language-specific meta-linters
+
+Some meta-linters focus on a single language but aggregate many tools for that language.
+
+### golangci-lint (Go)
+
+golangci-lint is the standard meta-linter for Go. It runs many Go linters concurrently and is significantly faster than running them one by one. It is the recommended replacement for the archived [Go Meta Linter](https://github.com/alecthomas/gometalinter).
+
+```bash
+# Install and run golangci-lint
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+golangci-lint run ./...
+```
+
+golangci-lint aggregates tools including `staticcheck`, `govet`, `errcheck`, `gosec`, `unused`, `gofmt`, and many more. You configure which linters to enable in a `.golangci.yml` file.
+
+### prospector (Python)
+
+prospector is a Python meta-linter that wraps pylint, pep8/pycodestyle, mccabe, and others. It provides a single command for checking Python code quality and automatically adjusts the strictness of checks based on the project.
+
+```bash
+pip install prospector
+prospector src/
+```
+
+You can also use it with flake8 through [flake8](https://github.com/PyCQA/flake8), which wraps `pyflakes`, `pycodestyle`, and `mccabe` and is one of the most widely used Python linters.
+
+## Choosing a meta-linter
+
+<Tabs>
+  <Tab title="CI-first">
+    If you want a meta-linter that runs in CI on every pull request with minimal local setup, **Mega-Linter** is the best choice. It runs in Docker, requires no local installation, and works with any CI system.
+  </Tab>
+  <Tab title="Local developer workflow">
+    If you want linting to happen automatically before every commit with fast incremental checking, use **pre-commit**. It integrates with git and only runs on files that have changed.
+  </Tab>
+  <Tab title="PR review comments">
+    If you want linter output to appear as inline comments on pull requests — from any linter, on any host — use **reviewdog**. It is a format adapter, not a linter itself.
+  </Tab>
+  <Tab title="Single language">
+    If you are working with Go, use **golangci-lint**. For Python, **prospector** or **flake8** are good starting points.
+  </Tab>
+</Tabs>
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Multi-language tools" icon="layer-group" href="/tools/multi-language">
+    Universal analyzers that work across many languages natively
+  </Card>
+  <Card title="Infrastructure & config" icon="server" href="/tools/infrastructure-config">
+    IaC linters for Kubernetes, Terraform, Dockerfile, and more
+  </Card>
+  <Card title="Tags reference" icon="tag" href="/api/tags-reference">
+    The metalinter tag in the catalog
+  </Card>
+  <Card title="Contributing a tool" icon="plus" href="/contributing/adding-a-tool">
+    Add a meta-linter to the catalog
+  </Card>
+</CardGroup>

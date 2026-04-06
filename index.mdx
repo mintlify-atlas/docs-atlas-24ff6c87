@@ -1,97 +1,71 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Analysis Tools"
+description: "A curated catalog of static analysis tools, linters, and formatters for all programming languages, config files, and build tools."
 ---
 
-## Setting up
+The Analysis Tools catalog lists **750+ static analysis tools** for every major programming language, build system, config format, and more. Whether you're looking for a linter, formatter, SAST scanner, or meta-linter, this is the authoritative community reference.
 
-Get your documentation site up and running in minutes.
+The official website [analysis-tools.dev](https://analysis-tools.dev/) is powered by this repository and adds rankings, user comments, and video resources for each tool.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Browse Tools by Language" icon="code" href="/tools/popular-languages">
+    Find linters and analyzers for Python, JavaScript, Go, Rust, Java, and more
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Security & SAST Tools" icon="shield-halved" href="/tools/security-sast">
+    Discover tools focused on vulnerability detection and secure code analysis
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Multi-Language Tools" icon="layer-group" href="/tools/multi-language">
+    Explore tools that work across many languages and tech stacks
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Contribute a Tool" icon="plus" href="/contributing/adding-a-tool">
+    Add a missing static analysis tool to the catalog
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## How this catalog works
 
-Everything you need to create world-class documentation.
+<Steps>
+  <Step title="All tools are stored as YAML">
+    Each tool has a YAML file in `data/tools/`. These files contain the tool's name, description, license, supported languages, and more.
+  </Step>
+  <Step title="A Rust renderer generates output">
+    Running `make render` processes the YAML sources and generates both the README and a machine-readable JSON API.
+  </Step>
+  <Step title="A JSON API is available">
+    The rendered output in `data/api/tools.json` can be used to build integrations, run queries with `jq`, or power your own tooling.
+  </Step>
+  <Step title="The community keeps it current">
+    Anyone can submit a pull request to add or update tools. Deprecated or unmaintained tools are marked with a warning symbol.
+  </Step>
+</Steps>
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+## Explore by category
 
-## Need inspiration?
+<CardGroup cols={3}>
+  <Card title="Popular Languages" icon="star" href="/tools/popular-languages">
+    Python, JavaScript, TypeScript, Go, Rust, Java, C/C++
+  </Card>
+  <Card title="Systems Languages" icon="microchip" href="/tools/systems-languages">
+    C, C++, Rust, Assembly, Ada, Fortran
+  </Card>
+  <Card title="Scripting Languages" icon="terminal" href="/tools/scripting-languages">
+    Python, Ruby, PHP, Perl, Shell, Lua
+  </Card>
+  <Card title="Functional Languages" icon="function" href="/tools/functional-languages">
+    Haskell, Elixir, Erlang, OCaml, F#, Clojure
+  </Card>
+  <Card title="Infrastructure & Config" icon="server" href="/tools/infrastructure-config">
+    Docker, Kubernetes, Terraform, Ansible, YAML, JSON
+  </Card>
+  <Card title="Meta-Linters" icon="list-check" href="/tools/meta-linters">
+    Tools that run multiple linters together
+  </Card>
+</CardGroup>
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+## Symbol legend
+
+| Symbol | Meaning |
+|--------|---------|
+| © | Proprietary / closed-source tool |
+| ℹ️ | Community recommends against using for new projects |
+| ⚠️ | Not updated in over 1 year, or repository was archived |

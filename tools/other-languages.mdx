@@ -1,0 +1,188 @@
+---
+title: 'Other languages'
+description: 'Static analysis tools for Kotlin, Scala, Dart, Groovy, Julia, MATLAB, Nim, Dlang, ABAP, Tcl, Verilog, SQL, and R.'
+---
+
+This page covers languages that do not fit neatly into the popular, systems, scripting, or functional language categories. These range from JVM languages like Kotlin and Scala, to domain-specific languages like SQL and ABAP, to hardware description languages like Verilog.
+
+<Note>
+  Proprietary tools are marked with ©. Tools that are no longer actively maintained or have been archived are marked with ⚠️.
+</Note>
+
+## Kotlin
+
+Kotlin runs on the JVM and is the primary language for Android development. It benefits from many Java tools as well as its own dedicated analyzers.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [detekt](https://detekt.github.io/detekt) | Static code analysis for Kotlin code. Provides a wide range of configurable checks covering complexity, style, performance, and correctness. Integrates with Gradle, Maven, and CI systems. | Apache-2.0 | Linter |
+| [ktlint](https://ktlint.github.io) | An anti-bikeshedding Kotlin linter with built-in formatter. Enforces the official Kotlin coding conventions with zero configuration. | MIT | Linter / Formatter |
+| [ktfmt](https://facebook.github.io/ktfmt) | A program that reformats Kotlin source code to comply with the common community standard for Kotlin code conventions. An IntelliJ plugin is also available. | Apache-2.0 | Formatter |
+
+### Unmaintained Kotlin tools
+
+| Tool | Description |
+|------|-------------|
+| **diktat** ⚠️ | Strict coding standard for Kotlin with a linter that detects and auto-fixes code smells. |
+
+<Tip>
+  **detekt** and **ktlint** are complementary: detekt focuses on finding code issues, while ktlint enforces formatting. Many Kotlin projects use both in CI.
+</Tip>
+
+## Scala
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [Scalastyle](http://www.scalastyle.org) | Examines your Scala code and indicates potential problems with it. Configurable and can be integrated with Maven, SBT, and Gradle. | Apache-2.0 | Linter |
+| [scapegoat](https://github.com/sksamuel/scapegoat) | Scala compiler plugin for static code analysis. Runs as part of the compilation phase and reports a wide range of potential issues. | Apache-2.0 | Linter |
+| [WartRemover](https://www.wartremover.org) | A flexible Scala code linting tool. Lets you ban specific patterns — such as `null`, `throw`, or `asInstanceOf` — from your codebase. | Apache-2.0 | Linter |
+
+### Unmaintained Scala tools
+
+| Tool | Description |
+|------|-------------|
+| **linter** ⚠️ | A Scala static analysis compiler plugin that adds compile-time checks for various possible bugs, inefficiencies, and style problems. |
+
+## Dart
+
+Dart is used for Flutter mobile and web development.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [effective_dart](https://pub.dev/packages/effective_dart) | Linter rules corresponding to the guidelines in *Effective Dart*. Provides a baseline set of lint rules that align with the official Dart style guide. | BSD-3-Clause | Linter |
+
+### Unmaintained Dart tools
+
+| Tool | Description |
+|------|-------------|
+| **Dart Code Metrics** ⚠️ | Additional linter for Dart. Reported code metrics, checked for anti-patterns, and provided additional rules for the Dart analyzer. |
+| **lint** ⚠️ | An opinionated, community-driven set of lint rules for Dart and Flutter projects. |
+| **Linter for dart** ⚠️ | Style linter for Dart. |
+
+## Groovy
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [CodeNarc](https://codenarc.github.io/CodeNarc) | A static analysis tool for Groovy source code that enables monitoring and enforcement of many coding standards and best practices. Integrates with Gradle, Maven, and Ant. | Apache-2.0 | Linter |
+
+## Julia
+
+Julia is a high-performance language for numerical and scientific computing. Static analysis tools help catch type instabilities and logic errors before they impact runtime performance.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [JET](https://github.com/aviatesk/JET.jl) | Static type inference system to detect bugs and type instabilities in Julia code. Can detect potential runtime errors without actually running the code. | MIT | Type checker |
+| [StaticLint](https://github.com/julia-vscode/StaticLint.jl) | Static code analysis for Julia. Used by the Julia VS Code extension to provide in-editor diagnostics. | MIT | Linter |
+
+## MATLAB
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [mlint](https://www.mathworks.com/help/matlab/ref/mlint.html) © | Checks MATLAB code files for possible problems. Built into the MATLAB product from MathWorks. | Proprietary | Linter |
+
+### Unmaintained MATLAB tools
+
+| Tool | Description |
+|------|-------------|
+| **MISS_HIT** ⚠️ | A free, open-source code quality toolset for MATLAB, Simulink, and Octave. Includes style checker, complexity metrics, static analysis, and copyright management. Designed to work without requiring a MATLAB installation. |
+
+## Nim
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [DrNim](https://nim-lang.org/docs/drnim.html) | Combines the Nim frontend with the Z3 proof engine to verify software written in Nim. Allows you to annotate Nim code with assertions that DrNim then attempts to formally prove. | MIT | Formal verifier |
+
+### Unmaintained Nim tools
+
+| Tool | Description |
+|------|-------------|
+| **nimfmt** ⚠️ | Nim code formatter, linter, and style checker. |
+
+## Dlang
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [D-scanner](https://github.com/dlang-community/D-Scanner) | A tool for analyzing D source code. Performs style analysis, symbol lookup, and detects various code issues. | Boost | Linter |
+
+## ABAP
+
+ABAP is the primary programming language for SAP business applications.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [abaplint](https://abaplint.org) | Linter for ABAP, written in TypeScript. Checks ABAP source code for a configurable set of rules. | MIT | Linter |
+| [abapOpenChecks](https://docs.abapopenchecks.org) | Enhances the SAP Code Inspector with new and customizable checks for ABAP code quality. | Apache-2.0 | Linter |
+
+## Tcl
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [Nagelfar](https://sourceforge.net/projects/nagelfar) | A static syntax checker for Tcl. Detects syntax errors, wrong number of arguments, and other common issues. | GPL-2.0 | Linter |
+| [tclchecker](https://github.com/ActiveState/tdk/blob/master/docs/3.0/TDK_3.0_Checker.txt) | A static syntax analysis module, part of the ActiveState TDK (Tcl Dev Kit). | Proprietary | Linter |
+| [Frink](http://catless.ncl.ac.uk/Programs/Frink) | A Tcl formatting and static check program that can prettify, minimize, obfuscate, or sanity-check Tcl source code. | MIT | Linter / Formatter |
+
+## Verilog / SystemVerilog
+
+Hardware description languages used for digital circuit design and FPGA development.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [Verilator](https://www.veripool.org/verilator) | Converts Verilog to a cycle-accurate behavioral model in C++ or SystemC. Performs lint code-quality checks as part of the conversion process. | LGPL-3.0 | Linter |
+| [svls](https://github.com/dalance/svls) | A Language Server Protocol implementation for Verilog and SystemVerilog, including lint capabilities. Integrates with standard LSP-compatible editors. | MIT | LSP |
+
+### Unmaintained Verilog tools
+
+| Tool | Description |
+|------|-------------|
+| **Icarus Verilog** ⚠️ | A Verilog simulation and synthesis tool that operates by compiling Verilog into a target format. |
+| **verible-linter-action** ⚠️ | Automatic SystemVerilog linting in GitHub Actions using the Verible tool. |
+
+## SQL
+
+SQL analysis tools help enforce consistent formatting, detect anti-patterns, and catch schema migration risks — particularly in PostgreSQL-heavy stacks.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [SQLFluff](https://www.sqlfluff.com) | Multiple dialect SQL linter and formatter. Supports a wide range of SQL dialects including ANSI, BigQuery, DuckDB, MySQL, PostgreSQL, Snowflake, SparkSQL, TSQL, and more. | MIT | Linter / Formatter |
+| [squawk](https://squawkhq.com) | Linter for PostgreSQL focused on migrations. Prevents unexpected downtime caused by database migrations and encourages best practices around Postgres schemas and SQL. | GPL-3.0 | Linter |
+| [holistic](https://holistic.dev) | More than 1,300 rules to analyze SQL queries. Takes an SQL schema definition and query source code to generate improvement recommendations. Detects code smells, unused indexes, unused tables, and more. | Proprietary | Analyzer |
+| [sqlint](https://github.com/purcell/sqlint) | Simple SQL linter. Checks SQL files for syntax errors. | MIT | Linter |
+| [pgspot](https://github.com/timescale/pgspot) | Spots vulnerabilities in Postgres extension scripts. Finds unsafe `search_path` usage and unsafe object creation. | Apache-2.0 | SAST |
+| [sleek](https://github.com/nrempel/sleek) | A CLI tool for formatting SQL. Helps maintain a consistent style across SQL code. | MIT | Formatter |
+| [dbcritic](https://github.com/channable/dbcritic) | Finds problems in a database schema, such as missing primary key constraints. | MIT | Linter |
+
+### Unmaintained SQL tools
+
+| Tool | Description |
+|------|-------------|
+| **sqlcheck** ⚠️ | Automatically identifies anti-patterns in SQL queries. |
+| **tsqllint** ⚠️ | T-SQL-specific linter. |
+| **TSqlRules** ⚠️ | TSQL static code analysis rules for SQL Server. |
+
+## R
+
+R is the primary language for statistical computing and data analysis.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [lintr](https://github.com/jimhester/lintr) | Static code analysis for R. Checks for adherence to a given style, identifies syntax errors, and finds semantic issues. Integrates with most major R IDEs and CI systems. | MIT | Linter |
+| [styler](https://styler.r-lib.org) | Formatting of R source code files and pretty-printing of R code. Follows the tidyverse style guide. | GPL-3.0 | Formatter |
+| [goodpractice](https://docs.ropensci.org/goodpractice) | Analyzes the source code for R packages and provides best-practice recommendations. Checks for cyclomatic complexity, function length, and more. | MIT | Linter |
+| [flowR](https://github.com/flowr-analysis/flowr) | A program slicer and dataflow analyzer for R. Reduces a program to the parts relevant for a specific task and provides a detailed view of R code semantics. | GPL-3.0 | Analyzer |
+
+---
+
+<CardGroup cols={2}>
+  <Card title="Popular languages" icon="star" href="/tools/popular-languages">
+    Tools for Python, JavaScript, TypeScript, Go, Java, Swift, and Rust.
+  </Card>
+  <Card title="Functional languages" icon="function" href="/tools/functional-languages">
+    Tools for Haskell, Elixir, Erlang, F#, Clojure, and Elm.
+  </Card>
+  <Card title="Scripting languages" icon="terminal" href="/tools/scripting-languages">
+    Tools for Python, Ruby, PHP, Perl, Shell, and Lua.
+  </Card>
+  <Card title="Systems languages" icon="microchip" href="/tools/systems-languages">
+    Tools for C, C++, Rust, Ada, Fortran, and Assembly.
+  </Card>
+</CardGroup>

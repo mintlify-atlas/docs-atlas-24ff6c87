@@ -1,0 +1,122 @@
+---
+title: "Multi-language tools"
+description: "Static analysis tools that work across many programming languages — universal analyzers, code complexity tools, code review bots, and general quality platforms."
+---
+
+Some tools are not tied to a single language. They work across an entire codebase regardless of what languages it uses, enforce consistent quality standards, or provide a unified view of code health. This page covers universal analyzers, complexity tools, code review bots, and general quality platforms.
+
+<Note>
+  The symbol © marks proprietary tools. ⚠️ means the tool has not been updated in over a year or the repository was archived. Open-source tools carry no symbol.
+</Note>
+
+## Universal analyzers
+
+These tools perform semantic analysis, pattern matching, or data-flow analysis across many languages from a single ruleset or query language.
+
+| Tool | Languages | License | Type |
+|------|-----------|---------|------|
+| [Semgrep](https://semgrep.dev) | C, C#, Go, Java, JS, Python, Ruby, TS, PHP, and more | LGPL-2.1 | CLI, service |
+| [CodeQL](https://github.com/github/codeql) | C, C++, C#, Java, JS, TS, Python | MIT | Service, IDE plugin |
+| [SonarQube Server](https://sonarqube.org) | 30+ languages including Java, Python, JS, C, C#, Go | LGPL-3.0 | Service |
+| [SonarQube Cloud](https://sonarcloud.io) © | 30+ languages | Proprietary (free tier) | Service |
+| [Infer](https://fbinfer.com) | Java, C, C++, Objective-C | MIT | CLI |
+| [PMD](https://pmd.github.io) | Java, Apex, JS, PLSQL, XML, XSL | Other | CLI |
+| [Coverity](https://www.synopsys.com/software-integrity/security-testing/static-analysis-sast.html) © | 20+ languages including C, C++, Java, Python, JS | Proprietary | Service |
+| [Klocwork](https://www.perforce.com/products/klocwork) © | C, C++, Java, C# | Proprietary | CLI, service |
+
+### Semgrep
+
+Semgrep is a fast, open-source static analysis tool for finding bugs and enforcing code standards at editor, commit, and CI time. Its rules look like the code you already write — no abstract syntax trees or regex wrestling required. Supports 17+ languages with a growing public registry of community and security rules.
+
+```bash
+# Install and run Semgrep
+pip install semgrep
+semgrep --config auto .
+```
+
+Semgrep's rule syntax mirrors the language it checks. For example, a rule to catch `eval()` calls in Python looks nearly identical to actual Python code. You can write your own rules or pull from the [Semgrep Registry](https://semgrep.dev/explore).
+
+### CodeQL
+
+CodeQL performs deep semantic analysis using dataflow queries. Rather than pattern matching, it builds a database of the program's structure and lets you query it in a Datalog-like language. GitHub integrates CodeQL directly into Actions via the Code Scanning feature — it runs automatically on pull requests and flags potential vulnerabilities.
+
+CodeQL supports C, C++, C#, Java, JavaScript, TypeScript, and Python with VSCode plugin support for local queries.
+
+### SonarQube
+
+SonarQube empowers development teams with a code quality and security solution that deeply integrates into enterprise environments. SonarQube Server provides a free and open-source Community Build, while SonarQube Cloud © is the hosted SaaS option that integrates with GitHub, GitLab, and Azure DevOps.
+
+SonarQube covers 30+ languages and detects bugs, code smells, duplications, and security hotspots. It provides a dashboard for tracking quality metrics over time.
+
+### Infer
+
+Infer is Facebook's open-source static analyzer for Java, C, and Objective-C. It performs inter-procedural analysis to find null dereferences, resource leaks, and concurrency bugs that simpler linters miss. Infer runs incrementally, only re-analyzing files that changed, making it practical in large codebases.
+
+### PMD
+
+PMD is a source code analyzer that finds common programming flaws including unused variables, empty catch blocks, unnecessary object creation, and more. It supports Java, Salesforce Apex, JavaScript, PLSQL, XML, and XSL. PMD also includes CPD (Copy Paste Detector) for finding duplicated code.
+
+## Code complexity tools
+
+Measuring cyclomatic complexity helps you identify functions that are difficult to test or maintain. High complexity correlates with higher defect rates.
+
+| Tool | Languages | License | Type |
+|------|-----------|---------|------|
+| [lizard](https://github.com/terryyin/lizard) | C/C++, Java, C#, JS, TS, Python, Ruby, Swift, Go, Rust, PHP, and more | MIT | CLI |
+
+### lizard
+
+Lizard is an extensible cyclomatic complexity analyzer for many programming languages, including C/C++ without requiring all header files or Java imports. It counts lines of code without comments, cyclomatic complexity number (CCN), token count of functions, and parameter count of functions. It also performs copy-paste detection (code clone detection) and many other forms of static code analysis.
+
+```bash
+pip install lizard
+lizard src/
+```
+
+## Code review bots
+
+These services integrate with GitHub, GitLab, or Bitbucket and post automated feedback on pull requests.
+
+| Tool | Languages | License | Notes |
+|------|-----------|---------|-------|
+| [CodeRabbit](https://coderabbit.ai) © | Any | Proprietary | AI-powered code review, integrates with GitHub and GitLab |
+| [DeepSource](https://deepsource.com) © | 20+ languages | Proprietary (free for open source) | Bug risks, security, anti-patterns, performance |
+| [CodeFactor](https://codefactor.io) © | Many | Proprietary | Automated code analysis for GitHub and Bitbucket repos |
+| [Codacy](https://www.codacy.com) © | 12+ languages | Proprietary | Code analysis to ship better code faster |
+
+**CodeRabbit** is an AI-powered code review tool that automatically reviews pull requests, identifies security vulnerabilities, and suggests code improvements. It integrates with GitHub and GitLab and posts line-level comments on pull requests.
+
+**DeepSource** performs in-depth static analysis to find issues in bug risks, security, anti-patterns, performance, documentation, and style with less than 5% false positives. It has native integrations with GitHub, GitLab, and Bitbucket.
+
+## General quality platforms
+
+These platforms provide broader views of code health, architectural analysis, or multi-dimensional quality reporting.
+
+| Tool | Languages | License | Notes |
+|------|-----------|---------|-------|
+| [Better Code Hub](https://bettercodehub.com) © | Many | Proprietary | Checks code against 10 engineering guidelines |
+| [Embold](https://embold.io) © | Java, C, C++, C#, JS, TS, Python, Go, Kotlin, and more | Proprietary | Design issues, code issues, duplication, and metrics |
+| [CodeScene](https://codescene.com) © | Many | Proprietary | Quality visualization, technical debt prioritization, delivery risk |
+
+**Better Code Hub** checks your GitHub codebase against 10 engineering guidelines devised by the Software Improvement Group — the authority on software quality.
+
+**Embold** is an intelligent software analytics platform that identifies design issues, code issues, duplication, and metrics across Java, C, C++, C#, JavaScript, TypeScript, Python, Go, Kotlin and more.
+
+**CodeScene** is a quality visualization tool for software. It prioritizes technical debt, detects delivery risks, and measures organizational aspects using a fully automated analysis.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Security & SAST" icon="shield-halved" href="/tools/security-sast">
+    Security-focused analysis, secret scanning, and dependency vulnerability tools
+  </Card>
+  <Card title="Meta-linters" icon="list-check" href="/tools/meta-linters">
+    Tools that aggregate many linters and run them together
+  </Card>
+  <Card title="Popular languages" icon="star" href="/tools/popular-languages">
+    Linters and analyzers for Python, JavaScript, Go, Rust, and more
+  </Card>
+  <Card title="Contributing a tool" icon="plus" href="/contributing/adding-a-tool">
+    Add a multi-language tool to the catalog
+  </Card>
+</CardGroup>

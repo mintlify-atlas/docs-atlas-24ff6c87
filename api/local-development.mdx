@@ -1,0 +1,211 @@
+---
+title: 'Local development'
+description: 'Set up the static-analysis repository locally, run the renderer, add tools, and explore the generated JSON API.'
+---
+
+This page walks you through cloning the repository, running the renderer, adding a new tool, and using the development tooling to validate your changes before submitting a pull request.
+
+## Prerequisites
+
+You need the following tools installed before you start:
+
+- **Git** — to clone the repository.
+- **Rust toolchain** — the renderer is written in Rust. Install via [rustup](https://rustup.rs):
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+- **`jq`** (optional but recommended) — for querying the generated JSON files from the command line.
+
+<Note>
+  The first time you run the renderer, Cargo will download and compile all dependencies. This takes a few minutes. Subsequent runs are much faster because the compiled artifacts are cached.
+</Note>
+
+## Set up the repository
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/analysis-tools-dev/static-analysis
+    cd static-analysis
+    ```
+  </Step>
+
+  <Step title="Run the renderer">
+    Generate `README.md` and `data/api/` from the YAML source files:
+
+    ```bash
+    make render
+    ```
+
+    On a successful run you will see Cargo compile the renderer, then output as it processes the tool files. The following files are updated:
+
+    - `README.md`
+    - `data/api/tools.json`
+    - `data/api/tags.json`
+  </Step>
+
+  <Step title="Verify the output">
+    Check that the JSON API was generated correctly:
+
+    ```bash
+    jq 'keys | length' data/api/tools.json
+    ```
+
+    This should print the total number of tools in the catalog (750+).
+  </Step>
+</Steps>
+
+## Add a new tool
+
+<Steps>
+  <Step title="Create a YAML file for the tool">
+    Add a new file at `data/tools/<toolname>.yml`. Use lowercase, hyphen-separated names. For example, for a tool called "My Linter":
+
+    ```bash
+    touch data/tools/my-linter.yml
+    ```
+
+    Then fill in the fields. See the [tool format guide](/contributing/tool-format) for the full YAML schema. A minimal example:
+
+    ```yaml
+    name: My Linter
+    categories:
+      - linter
+    tags:
+      - python
+    license: MIT License
+    types:
+      - cli
+    homepage: https://github.com/example/my-linter
+    description: A linter for Python that checks for common mistakes.
+    ```
+  </Step>
+
+  <Step title="Run the renderer to validate">
+    ```bash
+    make render
+    ```
+
+    If your YAML is invalid — for example, a tag that does not exist in `data/tags.yml`, or a name longer than 50 characters — the renderer will print a clear error and exit non-zero:
+
+    ```
+    Tool 'My Linter': Invalid tag: myunknowntag
+      File: data/tools/my-linter.yml
+    ```
+
+    Fix the error and re-run until the render succeeds.
+  </Step>
+
+  <Step title="Verify your tool appears in the output">
+    ```bash
+    jq '.["my-linter"]' data/api/tools.json
+    ```
+
+    You should see the JSON representation of your tool entry.
+  </Step>
+
+  <Step title="Submit a pull request">
+    Commit your new `.yml` file and open a pull request against the `main` branch. The CI pipeline runs `make render` automatically to validate your changes.
+
+    See the [contributing overview](/contributing/overview) for the full contribution guidelines.
+  </Step>
+</Steps>
+
+## Development commands
+
+| Command | Description |
+|---------|-------------|
+| `make render` | Full render including deprecated tools. |
+| `make render-skip-deprecated` | Render without deprecated tools. |
+| `make test` | Run the test suite for the renderer. |
+| `make clippy` | Run Clippy lints on the Rust code. |
+| `make check` | Check that the Rust code compiles without building. |
+| `make fmt` | Format the Rust source files. |
+| `make clean` | Remove Cargo build artifacts. |
+
+### Skipping deprecated tools during development
+
+When you are iterating on a new tool or exploring the catalog, you may want cleaner output without deprecated entries:
+
+```bash
+make render-skip-deprecated
+```
+
+This passes `--skip-deprecated` to the renderer binary, which omits any tool with `deprecated: true` from both the README and the JSON output.
+
+## Running tests
+
+The renderer includes a unit test suite. Run it with:
+
+```bash
+make test
+```
+
+The tests cover the slug function and other core logic in `ci/render/src/lib.rs`. For example, the slug tests verify that tool names like `"Astrée"` produce predictable ASCII keys like `"astree"`.
+
+## Checking for lint issues
+
+Before submitting changes to the Rust renderer code, run Clippy:
+
+```bash
+make clippy
+```
+
+This runs `cargo clippy -- -D warnings`, which treats all warnings as errors. Fix any reported issues before opening a pull request.
+
+## Exploring the JSON API with `jq`
+
+Once you have run `make render`, you can explore `data/api/tools.json` with `jq`.
+
+### Count tools by category
+
+```bash
+jq '[.[].categories[]] | group_by(.) | map({(.[0]): length}) | add' \
+  data/api/tools.json
+```
+
+### List all Python tools
+
+```bash
+jq '[to_entries[]
+  | select(.value.languages | index("python"))
+] | map(.value.name)' data/api/tools.json
+```
+
+### Find all CLI tools that are not deprecated
+
+```bash
+jq '[to_entries[]
+  | select(.value.types | index("cli"))
+  | select(.value.deprecated != true)
+] | map(.key)' data/api/tools.json
+```
+
+### Show all fields for a specific tool
+
+```bash
+jq '.semgrep' data/api/tools.json
+```
+
+<Tip>
+  Pipe any `jq` query through `| length` to get a count instead of a list, or through `| sort` to alphabetize the output.
+</Tip>
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Renderer" icon="gear" href="/api/renderer">
+    Detailed reference for how the renderer works internally.
+  </Card>
+  <Card title="Tool format" icon="file" href="/contributing/tool-format">
+    Full YAML schema reference for tool definition files.
+  </Card>
+  <Card title="Adding a tool" icon="plus" href="/contributing/adding-a-tool">
+    Step-by-step guide to contributing a new tool to the catalog.
+  </Card>
+  <Card title="API overview" icon="database" href="/api/overview">
+    How to use the generated JSON files in your own projects.
+  </Card>
+</CardGroup>

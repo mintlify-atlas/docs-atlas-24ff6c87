@@ -1,0 +1,133 @@
+---
+title: 'Systems languages'
+description: 'Static analysis tools for systems programming languages including C, C++, Rust, Assembly, Ada, and Fortran.'
+---
+
+Systems languages are used to write operating systems, embedded firmware, compilers, and performance-critical infrastructure. Static analysis is especially important in this space because runtime errors — null pointer dereferences, buffer overflows, integer overflows, and data races — can lead to security vulnerabilities, crashes, or undefined behavior that is difficult to reproduce.
+
+<Note>
+  Proprietary tools are marked with ©. Tools that are no longer actively maintained or have been archived are marked with ⚠️.
+</Note>
+
+## C and C++
+
+C and C++ have the broadest and most mature static analysis ecosystem of any language. Tools range from style checkers to formal verification frameworks used in safety-critical industries.
+
+### Open-source tools
+
+| Tool | Description | Type |
+|------|-------------|------|
+| [cppcheck](https://cppcheck.sourceforge.io) | Static analysis of C/C++ code. Detects undefined behavior, dangerous coding constructs, and bugs with a very low false-positive rate. Available as a CLI and GUI. | Bug finder |
+| [clang-tidy](https://clang.llvm.org/extra/clang-tidy) | Clang-based C++ linter tool with the ability to fix issues automatically. Part of the LLVM project and deeply integrated with the Clang compiler. | Linter |
+| [clazy](https://github.com/KDE/clazy) | Qt-oriented static code analyzer based on the Clang framework. A compiler plugin that makes Clang understand Qt semantics. Provides 50+ Qt-related compiler warnings, including memory allocation issues and API misuse. | Linter |
+| [Frama-C](https://www.frama-c.com) | A sound and extensible static analyzer for C code. Supports multiple analysis plugins including value analysis, dependency analysis, and weakest precondition computation. | Formal verifier |
+| [CBMC](http://www.cprover.org/cbmc) | Bounded model-checker for C programs. Verifies user-defined assertions, standard assertions, and provides several coverage metric analyses. | Model checker |
+| [ESBMC](http://esbmc.org) | Open source, permissively licensed, context-bounded model checker based on satisfiability modulo theories (SMT). Verifies single- and multi-threaded C/C++ programs. | Model checker |
+| [CPAchecker](https://cpachecker.sosy-lab.org) | A configurable software verification tool for C programs based on CPA (Configurable Program Analysis) concepts. | Formal verifier |
+| [GCC static analyzer](https://gcc.gnu.org/onlinedocs/gcc/Static-Analyzer-Options.html) | Built-in static analysis available in GCC since version 10. Can output diagnostics to JSON in SARIF format from GCC 13 onward. | Linter |
+| [scan-build](https://clang-analyzer.llvm.org/scan-build.html) | Frontend to drive the Clang Static Analyzer built into Clang via a regular build. Finds bugs in C, C++, and Objective-C programs. | Bug finder |
+| [IKOS](https://github.com/nasa-sw-vnv/ikos) | A sound static analyzer for C/C++ code based on LLVM, developed by NASA. | Formal verifier |
+| [Goblint](https://goblint.in.tum.de) | Static analyzer focused on multi-threaded C programs. Detects data races and other runtime errors such as buffer overflows and null-pointer dereferences. | Bug finder |
+| [Phasar](https://phasar.org) | A LLVM-based static analysis framework with taint analysis and type state analysis. | Framework |
+| [SVF](https://svf-tools.github.io/SVF) | A static tool that enables scalable and precise interprocedural dependence analysis for C and C++ programs. | Analyzer |
+| [splint](http://splint.org) | Annotation-assisted static program checker for C. Uses annotations in source code to verify more properties. | Linter |
+| [cpplint](https://github.com/cpplint/cpplint) | Automated C++ checker that follows Google's C++ Style Guide. | Linter |
+| [CMetrics](https://github.com/MetricsGrimoire/CMetrics) | Measures size and complexity for C files. | Metrics |
+| [cqmetrics](https://github.com/dspinellis/cqmetrics) | Quality metrics for C code. Measures a wide range of software engineering metrics. | Metrics |
+| [CScout](https://www.spinellis.gr/cscout) | Complexity and quality metrics for C and C preprocessor code. | Metrics |
+| [KLEE](http://klee.github.io) | A dynamic symbolic execution engine built on LLVM. Auto-generates test cases to exercise as much of the program as possible. | Symbolic exec |
+
+### Unmaintained tools
+
+| Tool | Description |
+|------|-------------|
+| **flawfinder** ⚠️ | Finds possible security weaknesses in C/C++ source code using a pattern-matching approach. |
+| **flint++** ⚠️ | Cross-platform, zero-dependency port of flint, a lint program for C++ developed and used at Facebook. |
+| **vera++** ⚠️ | A programmable tool for verification, analysis, and transformation of C++ source code. |
+| **ENRE-cpp** ⚠️ | ENtity Relationship Extractor for C/C++ based on Eclipse CDT. Under development. |
+| **MATE** ⚠️ | Interactive program analysis suite for C and C++ using code property graphs (CPGs). |
+
+### Proprietary tools
+
+| Tool | Description |
+|------|-------------|
+| [Astrée](https://www.absint.com/astree/index.htm) © | Proves the absence of runtime errors and invalid concurrent behavior in C/C++ applications. Sound for floating-point computations. Checks for MISRA/CERT/CWE/Adaptive Autosar coding rules. Supports ISO 26262, DO-178C level A qualification. |
+| [PC-lint](https://pclintplus.com/) © | Static analysis for C/C++. Runs natively on Windows, Linux, and macOS. Supports C11/C18 and C++17. |
+| [Polyspace Bug Finder](https://www.mathworks.com/products/polyspace-bug-finder.html) © | Identifies run-time errors, concurrency issues, security vulnerabilities, and other defects in C and C++ embedded software. |
+| [Polyspace Code Prover](https://www.mathworks.com/products/polyspace-code-prover.html) © | Formally proves the absence of overflow, divide-by-zero, out-of-bounds array access, and other runtime errors in C/C++ source code. |
+| [Helix QAC](https://www.perforce.com/products/helix-qac) © | Enterprise-grade static analysis for embedded software. Supports MISRA, CERT, and AUTOSAR coding standards. |
+| [LDRA](https://ldra.com) © | A tool suite including static analysis (TBVISION) to standards including MISRA C & C++, JSF++ AV, CWE, CERT C, CERT C++, and custom rules. |
+| [CppDepend](https://www.cppdepend.com) © | Measure, query, and visualize your code. Helps avoid unexpected issues, technical debt, and complexity. |
+| [TrustInSoft Analyzer](https://trust-in-soft.com) © | Exhaustive detection of coding errors and security vulnerabilities. Supports undefined behavior detection (buffer overflows, null-pointer dereferences, use-after-free, etc.) and formal verification. Supports C up to C18 and C++ up to C++20. |
+
+<Info>
+  For safety-critical embedded systems (automotive, aerospace, medical), the proprietary tools like Astrée, Polyspace, and LDRA are commonly required because they provide sound analysis and support formal qualification under ISO 26262 or DO-178C.
+</Info>
+
+## Rust
+
+Rust provides memory safety guarantees at the language level, but static analysis tools help catch additional issues — especially in `unsafe` code blocks, dependency security, and API compatibility.
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [clippy](https://rust-lang.github.io/rust-clippy) | A code linter to catch common mistakes and improve your Rust code. Ships with the Rust toolchain. Over 700 lints covering correctness, performance, style, and complexity. | Apache-2.0 / MIT | Linter |
+| [rustfmt](https://github.com/rust-lang/rustfmt) | The official Rust code formatter. Formats code according to the Rust style guide. Ships with `rustup`. | Apache-2.0 / MIT | Formatter |
+| [cargo-audit](https://rustsec.org) | Audits `Cargo.lock` for crates with security vulnerabilities reported to the RustSec Advisory Database. | Apache-2.0 / MIT | SAST |
+| [cargo-deny](https://embarkstudios.github.io/cargo-deny) | Lints your dependency tree. Checks for valid license information, duplicate crates, security vulnerabilities, and banned packages. | Apache-2.0 | Linter |
+| [cargo-geiger](https://github.com/geiger-rs/cargo-geiger) | Analyzes the usage of `unsafe` Rust code across your dependency tree. Provides statistical output to aid security auditing. | Apache-2.0 / MIT | SAST |
+| [rust-analyzer](https://rust-analyzer.github.io) | The de-facto Rust language server. Provides go-to-definition, type inference, symbol search, reformatting, and code completion. | Apache-2.0 / MIT | LSP |
+| [dylint](https://www.trailofbits.com/post/write-rust-lints-without-forking-clippy) | A tool for running Rust lints from dynamic libraries. Makes it easy for developers to maintain their own custom lint collections without forking clippy. | Apache-2.0 / MIT | Linter |
+| [kani](https://github.com/model-checking/kani) | Bit-precise model checker for Rust. Particularly useful for verifying `unsafe` code blocks. Verifies memory safety, user-specified assertions, absence of panics, and some arithmetic overflows. | Apache-2.0 | Model checker |
+| [cargo-semver-checks](https://crates.io/crates/cargo-semver-checks) | Scans Rust crate releases for semver violations. Can be used via CLI, GitHub Actions, or release managers like `release-plz`. | Apache-2.0 / MIT | Linter |
+| [lockbud](https://github.com/BurtonQin/lockbud) | Statically detects Rust deadlock bugs. Detects double-lock and locks-in-conflicting-order deadlocks. Reports bugs in JSON format with source location. | Apache-2.0 | Bug finder |
+
+### Unmaintained Rust tools
+
+| Tool | Description |
+|------|-------------|
+| **Prusti** ⚠️ | A static verifier for Rust based on the Viper verification infrastructure. Verifies absence of panics by default. |
+| **MIRAI** ⚠️ | An abstract interpreter operating on Rust's mid-level intermediate language, providing warnings based on taint analysis. |
+| **Rudra** ⚠️ | Rust memory safety and undefined behavior detection. Capable of analyzing packages on crates.io at scale. |
+
+## Assembly
+
+| Tool | Description |
+|------|-------------|
+| **STOKE** ⚠️ | A programming-language agnostic stochastic optimizer for the x86_64 instruction set. Uses random search to explore the space of all possible program transformations. |
+
+<Warning>
+  STOKE is no longer actively maintained. For x86_64 analysis, consider using tools that operate at the binary or LLVM IR level instead.
+</Warning>
+
+## Ada
+
+Ada is widely used in safety-critical and mission-critical systems where correctness guarantees are mandatory.
+
+| Tool | Description |
+|------|-------------|
+| [Polyspace for Ada](https://www.mathworks.com/products/polyspace-ada.html) © | Provides code verification that proves the absence of overflow, divide-by-zero, out-of-bounds array access, and certain other runtime errors in Ada source code. |
+| [SPARK](https://www.adacore.com/about-spark) © | Static analysis and formal verification toolset for Ada. SPARK is a formally analyzable subset of Ada, and the toolset can prove the absence of runtime errors and verify functional correctness. |
+
+## Fortran
+
+| Tool | Description | License | Type |
+|------|-------------|---------|------|
+| [Fortitude](https://fortitude.readthedocs.io) | Fortran linter inspired by (and built on) Ruff. Based on community best practices. Supports the latest Fortran 2023 standard. | MIT | Linter |
+| [fprettify](https://pypi.python.org/pypi/fprettify) | Auto-formatter for modern Fortran source code written in Python. Provides consistent whitespace, indentation, and delimiter alignment. Can change letter case and handle preprocessor directives. | GPL-3.0 | Formatter |
+
+---
+
+<CardGroup cols={2}>
+  <Card title="Popular languages" icon="star" href="/tools/popular-languages">
+    Tools for Python, JavaScript, TypeScript, Go, Java, Swift, and Rust.
+  </Card>
+  <Card title="Scripting languages" icon="terminal" href="/tools/scripting-languages">
+    Tools for Python, Ruby, PHP, Perl, Shell, and Lua.
+  </Card>
+  <Card title="Security / SAST" icon="shield" href="/tools/security-sast">
+    Security-focused static analysis tools across all languages.
+  </Card>
+  <Card title="Multi-language tools" icon="layer-group" href="/tools/multi-language">
+    Tools that analyze code across multiple languages at once.
+  </Card>
+</CardGroup>
